@@ -84,6 +84,7 @@
     </properties>
 
     <modules>
+        <module>presto-datagen</module>
         <module>presto-atop</module>
         <module>presto-spi</module>
         <module>presto-array</module>
