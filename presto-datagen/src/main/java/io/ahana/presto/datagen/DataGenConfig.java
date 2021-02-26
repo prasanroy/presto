@@ -30,8 +30,8 @@ public class DataGenConfig
         return metadataUrl;
     }
 
-    @Config("metadata")
-    public DataGenConfig setMetadataFile(String metadataResourceName)
+    @Config("datagen.metadata-url")
+    public DataGenConfig setMetadataUrl(String metadataResourceName)
     {
         this.metadataUrl = Resources.getResource(metadataResourceName);
         return this;
