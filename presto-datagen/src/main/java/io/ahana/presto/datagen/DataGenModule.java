@@ -50,10 +50,11 @@ public class DataGenModule
         binder.bind(DataGen.class).in(Scopes.SINGLETON);
         binder.bind(DataGenSplitManager.class).in(Scopes.SINGLETON);
         binder.bind(DataGenRecordSetProvider.class).in(Scopes.SINGLETON);
+
         configBinder(binder).bindConfig(DataGenConfig.class);
 
         jsonBinder(binder).addDeserializerBinding(Type.class).to(TypeDeserializer.class);
-        jsonCodecBinder(binder).bindMapJsonCodec(String.class, listJsonCodec(DataGenTable.class));
+        jsonCodecBinder(binder).bindListJsonCodec(listJsonCodec(DataGenTable.class));
     }
 
     public static final class TypeDeserializer

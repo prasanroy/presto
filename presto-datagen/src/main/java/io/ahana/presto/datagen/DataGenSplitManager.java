@@ -50,16 +50,21 @@ public class DataGenSplitManager
     {
         DataGenTableLayoutHandle layoutHandle = (DataGenTableLayoutHandle) layout;
         DataGenTableHandle tableHandle = layoutHandle.getTable();
-        DataGenTable table = datagen.getTable(tableHandle.getSchemaName(), tableHandle.getTableName());
-        // this can happen if table is removed during a query
-        checkState(table != null, "Table %s.%s no longer exists", tableHandle.getSchemaName(), tableHandle.getTableName());
 
         List<ConnectorSplit> splits = new ArrayList<>();
-        for (DataGenTableStats splitSpec : table.getSplitSpecs()) {
-            splits.add(new DataGenSplit(tableHandle.getSchemaName(), tableHandle.getTableName(), splitSpec));
-        }
-        Collections.shuffle(splits);
 
+        String schemaName = tableHandle.getSchemaName();
+        String tableName = tableHandle.getTableName();
+        datagen.getTable(schemaName, tableName).ifPresent(table -> {
+            // this can happen if table is removed during a query
+            checkState(table != null, "Table %s.%s no longer exists", schemaName, tableName);
+
+            for (DataGenTableStats splitSpec : table.getSplitSpecs()) {
+                splits.add(new DataGenSplit(schemaName, tableName, splitSpec));
+            }
+        });
+
+        Collections.shuffle(splits);
         return new FixedSplitSource(splits);
     }
 }

@@ -16,13 +16,14 @@ package io.ahana.presto.datagen;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects.ToStringHelper;
-import com.google.common.collect.ImmutableMap;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import static com.google.common.base.MoreObjects.toStringHelper;
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.collect.Maps.uniqueIndex;
 import static java.util.Objects.requireNonNull;
 
 public final class DataGenTableStats
@@ -33,11 +34,13 @@ public final class DataGenTableStats
     @JsonCreator
     public DataGenTableStats(
             @JsonProperty("rowCount") long rowCount,
-            @JsonProperty("columnStats") Map<String, DataGenColumnStats> columnStats)
+            @JsonProperty("columnStats") List<DataGenColumnStats> columnStats)
     {
         checkArgument(rowCount >= 0, "rowCount is negative");
         this.rowCount = rowCount;
-        this.columnStats = requireNonNull(columnStats, "columnStats is null");
+
+        requireNonNull(columnStats, "columnStats is null");
+        this.columnStats = uniqueIndex(columnStats, DataGenColumnStats::getName);
     }
 
     @JsonProperty
@@ -49,7 +52,7 @@ public final class DataGenTableStats
     @JsonProperty
     public Map<String, DataGenColumnStats> getColumnStats()
     {
-        return ImmutableMap.copyOf(columnStats);
+        return columnStats;
     }
 
     public Optional<DataGenColumnStats> getColumnStats(String columnName)

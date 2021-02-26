@@ -13,46 +13,35 @@
  */
 package io.ahana.presto.datagen;
 
-import com.facebook.presto.spi.ColumnMetadata;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.collect.Maps.uniqueIndex;
 import static java.util.Objects.requireNonNull;
 
-public class DataGenTable
+public class DataGenSchema
 {
     private final String name;
-    private final List<DataGenColumn> columns;
-    private final List<ColumnMetadata> columnsMetadata;
-    private final List<DataGenTableStats> splitSpecs;
+    private final Map<String, DataGenTable> tables;
 
     @JsonCreator
-    public DataGenTable(
+    public DataGenSchema(
             @JsonProperty("name") String name,
-            @JsonProperty("columns") List<DataGenColumn> columns,
-            @JsonProperty("splitSpecs") List<DataGenTableStats> splitSpecs)
+            @JsonProperty("tables") List<DataGenTable> tables)
     {
         checkArgument(!isNullOrEmpty(name), "name is null or is empty");
         this.name = name;
 
-        requireNonNull(columns, "columns is null");
-        checkArgument(columns.isEmpty(), "columns is empty");
-        this.columns = ImmutableList.copyOf(columns);
-
-        ImmutableList.Builder<ColumnMetadata> columnsMetadata = ImmutableList.builder();
-        for (DataGenColumn column : this.columns) {
-            columnsMetadata.add(new ColumnMetadata(column.getName(), column.getType()));
-        }
-        this.columnsMetadata = columnsMetadata.build();
-
-        requireNonNull(splitSpecs, "splitSpecs is null");
-        checkArgument(splitSpecs.isEmpty(), "splitSpecs is empty");
-        this.splitSpecs = ImmutableList.copyOf(splitSpecs);
+        requireNonNull(tables, "tables is null");
+        this.tables = uniqueIndex(tables, DataGenTable::getName);
     }
 
     @JsonProperty
@@ -62,19 +51,19 @@ public class DataGenTable
     }
 
     @JsonProperty
-    public List<DataGenColumn> getColumns()
+    public List<DataGenTable> getTables()
     {
-        return columns;
+        return ImmutableList.copyOf(tables.values());
     }
 
-    @JsonProperty
-    public List<DataGenTableStats> getSplitSpecs()
+    public Set<String> getTableNames()
     {
-        return splitSpecs;
+        return ImmutableSet.copyOf(tables.keySet());
     }
 
-    public List<ColumnMetadata> getColumnsMetadata()
+    public DataGenTable getTable(String tableName)
     {
-        return columnsMetadata;
+        checkArgument(!isNullOrEmpty(tableName), "tableName is null or is empty");
+        return tables.get(tableName);
     }
 }

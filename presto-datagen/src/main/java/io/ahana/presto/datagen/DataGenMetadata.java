@@ -53,29 +53,22 @@ public class DataGenMetadata
     @Override
     public List<String> listSchemaNames(ConnectorSession session)
     {
-        return listSchemaNames();
-    }
-
-    public List<String> listSchemaNames()
-    {
         return ImmutableList.copyOf(datagen.getSchemaNames());
     }
 
     @Override
     public DataGenTableHandle getTableHandle(
             ConnectorSession session,
-            SchemaTableName tableName)
+            SchemaTableName table)
     {
-        if (!listSchemaNames(session).contains(tableName.getSchemaName())) {
-            return null;
+        String schemaName = table.getSchemaName();
+        String tableName = table.getTableName();
+
+        if (datagen.getTable(schemaName, tableName).isPresent()) {
+            return new DataGenTableHandle(schemaName, tableName);
         }
 
-        DataGenTable table = datagen.getTable(tableName.getSchemaName(), tableName.getTableName());
-        if (table == null) {
-            return null;
-        }
-
-        return new DataGenTableHandle(tableName.getSchemaName(), tableName.getTableName());
+        return null;
     }
 
     @Override
@@ -103,10 +96,10 @@ public class DataGenMetadata
             ConnectorSession session,
             ConnectorTableHandle table)
     {
-        DataGenTableHandle datagenTableHandle = (DataGenTableHandle) table;
-        SchemaTableName tableName = new SchemaTableName(datagenTableHandle.getSchemaName(), datagenTableHandle.getTableName());
+        DataGenTableHandle tableHandle = (DataGenTableHandle) table;
+        SchemaTableName tableName = new SchemaTableName(tableHandle.getSchemaName(), tableHandle.getTableName());
 
-        return getTableMetadata(tableName);
+        return getTableMetadata(tableName).orElse(null);
     }
 
     @Override
@@ -115,11 +108,11 @@ public class DataGenMetadata
             String schemaNameOrNull)
     {
         Set<String> schemaNames;
-        if (schemaNameOrNull != null) {
-            schemaNames = ImmutableSet.of(schemaNameOrNull);
+        if (schemaNameOrNull == null) {
+            schemaNames = datagen.getSchemaNames();
         }
         else {
-            schemaNames = datagen.getSchemaNames();
+            schemaNames = ImmutableSet.of(schemaNameOrNull);
         }
 
         ImmutableList.Builder<SchemaTableName> builder = ImmutableList.builder();
@@ -128,19 +121,20 @@ public class DataGenMetadata
                 builder.add(new SchemaTableName(schemaName, tableName));
             }
         }
+
         return builder.build();
     }
 
     @Override
     public Map<String, ColumnHandle> getColumnHandles(
             ConnectorSession session,
-            ConnectorTableHandle tableHandle)
+            ConnectorTableHandle handle)
     {
-        DataGenTableHandle datagenTableHandle = (DataGenTableHandle) tableHandle;
-        DataGenTable table = datagen.getTable(datagenTableHandle.getSchemaName(), datagenTableHandle.getTableName());
-        if (table == null) {
-            throw new TableNotFoundException(datagenTableHandle.toSchemaTableName());
-        }
+        DataGenTableHandle tableHandle = (DataGenTableHandle) handle;
+
+        String schemaName = tableHandle.getSchemaName();
+        String tableName = tableHandle.getTableName();
+        DataGenTable table = datagen.getTable(schemaName, tableName).orElseThrow(() -> new TableNotFoundException(tableHandle.toSchemaTableName()));
 
         ImmutableMap.Builder<String, ColumnHandle> columnHandles = ImmutableMap.builder();
         int index = 0;
@@ -148,6 +142,7 @@ public class DataGenMetadata
             columnHandles.put(column.getName(), new DataGenColumnHandle(column.getName(), column.getType(), index));
             index++;
         }
+
         return columnHandles.build();
     }
 
@@ -159,37 +154,33 @@ public class DataGenMetadata
         requireNonNull(prefix, "prefix is null");
         ImmutableMap.Builder<SchemaTableName, List<ColumnMetadata>> columns = ImmutableMap.builder();
         for (SchemaTableName tableName : listTables(session, prefix)) {
-            ConnectorTableMetadata tableMetadata = getTableMetadata(tableName);
-            // table can disappear during listing operation
-            if (tableMetadata != null) {
-                columns.put(tableName, tableMetadata.getColumns());
-            }
+            getTableMetadata(tableName).ifPresent(tableMetadata ->
+                    columns.put(tableName, tableMetadata.getColumns()));
         }
         return columns.build();
     }
 
-    private ConnectorTableMetadata getTableMetadata(SchemaTableName tableName)
+    private Optional<ConnectorTableMetadata> getTableMetadata(
+            SchemaTableName schemaTable)
     {
-        if (!listSchemaNames().contains(tableName.getSchemaName())) {
-            return null;
-        }
+        String schemaName = schemaTable.getSchemaName();
+        String tableName = schemaTable.getTableName();
 
-        DataGenTable table = datagen.getTable(tableName.getSchemaName(), tableName.getTableName());
-        if (table == null) {
-            return null;
-        }
-
-        return new ConnectorTableMetadata(tableName, table.getColumnsMetadata());
+        return datagen.getTable(schemaName, tableName).map(table ->
+            new ConnectorTableMetadata(schemaTable, table.getColumnsMetadata()));
     }
 
     private List<SchemaTableName> listTables(
             ConnectorSession session,
             SchemaTablePrefix prefix)
     {
+        String schemaName = prefix.getSchemaName();
+
         if (prefix.getSchemaName() == null) {
-            return listTables(session, prefix.getSchemaName());
+            return listTables(session, schemaName);
         }
-        return ImmutableList.of(new SchemaTableName(prefix.getSchemaName(), prefix.getTableName()));
+
+        return ImmutableList.of(new SchemaTableName(schemaName, prefix.getTableName()));
     }
 
     @Override

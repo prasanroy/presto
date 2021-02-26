@@ -14,7 +14,6 @@
 package io.ahana.presto.datagen;
 
 import com.facebook.airlift.json.JsonCodec;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.io.Resources;
 
@@ -22,78 +21,62 @@ import javax.inject.Inject;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
-import static com.google.common.collect.Maps.transformValues;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Maps.uniqueIndex;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.requireNonNull;
 
 public class DataGen
 {
-    /**
-     * SchemaName -> (TableName -> TableMetadata)
-     */
-    private final Map<String, Map<String, DataGenTable>> schemas;
+    private final Map<String, DataGenSchema> schemas;
 
     @Inject
     public DataGen(
             DataGenConfig config,
-            JsonCodec<Map<String, List<DataGenTable>>> catalogCodec)
+            JsonCodec<List<DataGenSchema>> jsonCodec)
     {
         requireNonNull(config, "config is null");
-        requireNonNull(catalogCodec, "catalogCodec is null");
+        requireNonNull(jsonCodec, "jsonCodec is null");
 
+        String json;
         try {
-            schemas = readSchemas(config.getMetadataUrl(), catalogCodec);
+            json = Resources.toString(config.getMetadataUrl(), UTF_8);
         }
         catch (IOException e) {
             throw new UncheckedIOException(e);
         }
+
+        List<DataGenSchema> schemas = jsonCodec.fromJson(json);
+        requireNonNull(schemas, "schemas is null");
+        this.schemas = uniqueIndex(schemas, DataGenSchema::getName);
     }
 
     public Set<String> getSchemaNames()
     {
-        return schemas.keySet();
+        return ImmutableSet.copyOf(schemas.keySet());
     }
 
-    public Set<String> getTableNames(String schema)
+    public Optional<DataGenSchema> getSchema(String schemaName)
     {
-        requireNonNull(schema, "schema is null");
-
-        Map<String, DataGenTable> tables = schemas.get(schema);
-        if (tables == null) {
-            return ImmutableSet.of();
-        }
-        return tables.keySet();
+        checkArgument(!isNullOrEmpty(schemaName), "schemaName is null or is empty");
+        return Optional.ofNullable(schemas.get(schemaName));
     }
 
-    public DataGenTable getTable(String schema, String tableName)
+    public Set<String> getTableNames(String schemaName)
     {
-        requireNonNull(schema, "schema is null");
-        requireNonNull(tableName, "tableName is null");
-
-        Map<String, DataGenTable> tables = schemas.get(schema);
-        if (tables == null) {
-            return null;
-        }
-        return tables.get(tableName);
+        return getSchema(schemaName)
+            .map(schema -> schema.getTableNames())
+            .orElse(ImmutableSet.of());
     }
 
-    private static Map<String, Map<String, DataGenTable>> readSchemas(
-            URL metadataURL,
-            JsonCodec<Map<String, List<DataGenTable>>> catalogCodec) throws IOException
+    public Optional<DataGenTable> getTable(String schemaName, String tableName)
     {
-        String json = Resources.toString(metadataURL, UTF_8);
-        Map<String, List<DataGenTable>> catalog = catalogCodec.fromJson(json);
-
-        Map<String, Map<String, DataGenTable>> schema = transformValues(
-                catalog,
-                tables -> ImmutableMap.copyOf(uniqueIndex(tables, DataGenTable::getName)));
-
-        return ImmutableMap.copyOf(schema);
+        return getSchema(schemaName).map(schema -> schema.getTable(tableName));
     }
 }

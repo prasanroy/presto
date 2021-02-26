@@ -20,10 +20,13 @@ import java.util.Optional;
 
 import static com.google.common.base.MoreObjects.toStringHelper;
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
 public final class DataGenColumnStats
 {
+    private final String name;
+
     private final Optional<Object> min;
     private final Optional<Object> max;
     private final Optional<Long> distinctValsCount;
@@ -32,12 +35,16 @@ public final class DataGenColumnStats
 
     @JsonCreator
     public DataGenColumnStats(
+            @JsonProperty("name") String name,
             @JsonProperty("min") Optional<Object> min,
             @JsonProperty("max") Optional<Object> max,
             @JsonProperty("distinctValsCount") Optional<Long> distinctValsCount,
             @JsonProperty("nullsCount") Optional<Long> nullsCount,
             @JsonProperty("dataSize") Optional<Long> dataSize)
     {
+        checkArgument(!isNullOrEmpty(name), "name is null or is empty");
+        this.name = name;
+
         this.min = requireNonNull(min, "min is null");
         this.max = requireNonNull(min, "max is null");
 
@@ -52,6 +59,12 @@ public final class DataGenColumnStats
         requireNonNull(dataSize, "dataSize is null");
         checkArgument(dataSize.isPresent() && dataSize.get() > 0, "dataSize is non-positive");
         this.dataSize = dataSize;
+    }
+
+    @JsonProperty
+    public String getName()
+    {
+        return name;
     }
 
     @JsonProperty
