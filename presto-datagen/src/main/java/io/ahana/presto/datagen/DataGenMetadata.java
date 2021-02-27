@@ -175,12 +175,13 @@ public class DataGenMetadata
             SchemaTablePrefix prefix)
     {
         String schemaName = prefix.getSchemaName();
+        String tableName = prefix.getTableName();
 
-        if (prefix.getSchemaName() == null) {
+        if (schemaName == null || tableName == null) {
             return listTables(session, schemaName);
         }
 
-        return ImmutableList.of(new SchemaTableName(schemaName, prefix.getTableName()));
+        return ImmutableList.of(new SchemaTableName(schemaName, tableName));
     }
 
     @Override
