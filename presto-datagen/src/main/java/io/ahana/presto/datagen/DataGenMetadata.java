@@ -80,6 +80,7 @@ public class DataGenMetadata
     {
         DataGenTableHandle tableHandle = (DataGenTableHandle) table;
         ConnectorTableLayout layout = new ConnectorTableLayout(new DataGenTableLayoutHandle(tableHandle));
+
         return ImmutableList.of(new ConnectorTableLayoutResult(layout, constraint.getSummary()));
     }
 
@@ -134,6 +135,7 @@ public class DataGenMetadata
 
         String schemaName = tableHandle.getSchemaName();
         String tableName = tableHandle.getTableName();
+
         DataGenTable table = datagen.getTable(schemaName, tableName).orElseThrow(() -> new TableNotFoundException(tableHandle.toSchemaTableName()));
 
         ImmutableMap.Builder<String, ColumnHandle> columnHandles = ImmutableMap.builder();
@@ -152,11 +154,13 @@ public class DataGenMetadata
             SchemaTablePrefix prefix)
     {
         requireNonNull(prefix, "prefix is null");
+
         ImmutableMap.Builder<SchemaTableName, List<ColumnMetadata>> columns = ImmutableMap.builder();
         for (SchemaTableName tableName : listTables(session, prefix)) {
             getTableMetadata(tableName).ifPresent(tableMetadata ->
                     columns.put(tableName, tableMetadata.getColumns()));
         }
+
         return columns.build();
     }
 
