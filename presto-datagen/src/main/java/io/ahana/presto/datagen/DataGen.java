@@ -46,7 +46,7 @@ public class DataGen
 
         String json;
         try {
-            json = Resources.toString(config.getMetadataUrl(), UTF_8);
+            json = Resources.toString(config.getMetadataUri().toURL(), UTF_8);
         }
         catch (IOException e) {
             throw new UncheckedIOException(e);

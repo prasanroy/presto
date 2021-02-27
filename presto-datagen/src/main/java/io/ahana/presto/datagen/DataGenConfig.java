@@ -14,26 +14,25 @@
 package io.ahana.presto.datagen;
 
 import com.facebook.airlift.configuration.Config;
-import com.google.common.io.Resources;
 
 import javax.validation.constraints.NotNull;
 
-import java.net.URL;
+import java.net.URI;
 
 public class DataGenConfig
 {
-    private URL metadataUrl;
+    private URI metadataUri;
 
     @NotNull
-    public URL getMetadataUrl()
+    public URI getMetadataUri()
     {
-        return metadataUrl;
+        return metadataUri;
     }
 
-    @Config("datagen.metadata-url")
-    public DataGenConfig setMetadataUrl(String metadataResourceName)
+    @Config("datagen.metadata-uri")
+    public DataGenConfig setMetadataUri(URI metadataUri)
     {
-        this.metadataUrl = Resources.getResource(metadataResourceName);
+        this.metadataUri = metadataUri;
         return this;
     }
 }
