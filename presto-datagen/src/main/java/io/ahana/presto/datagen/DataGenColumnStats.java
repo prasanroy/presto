@@ -53,11 +53,11 @@ public final class DataGenColumnStats
         this.distinctValsCount = distinctValsCount;
 
         requireNonNull(nullsCount, "nullsCount is null");
-        checkArgument(nullsCount.isPresent() && nullsCount.get() > 0, "nullsCount is non-positive");
+        checkArgument(!nullsCount.isPresent() || nullsCount.get() >= 0, "nullsCount is negative");
         this.nullsCount = nullsCount.orElse(0L);
 
         requireNonNull(dataSize, "dataSize is null");
-        checkArgument(dataSize.isPresent() && dataSize.get() > 0, "dataSize is non-positive");
+        checkArgument(!dataSize.isPresent() || dataSize.get() >= 0, "dataSize is negative");
         this.dataSize = dataSize;
     }
 
