@@ -41,7 +41,7 @@ public class DataGenTable
         this.name = name;
 
         requireNonNull(columns, "columns is null");
-        checkArgument(columns.isEmpty(), "columns is empty");
+        checkArgument(columns.isEmpty(), "[%s] columns is empty", name);
         this.columns = ImmutableList.copyOf(columns);
 
         ImmutableList.Builder<ColumnMetadata> columnsMetadata = ImmutableList.builder();
@@ -51,7 +51,7 @@ public class DataGenTable
         this.columnsMetadata = columnsMetadata.build();
 
         requireNonNull(splitSpecs, "splitSpecs is null");
-        checkArgument(splitSpecs.isEmpty(), "splitSpecs is empty");
+        checkArgument(splitSpecs.isEmpty(), "[%s] splitSpecs is empty", name);
         this.splitSpecs = ImmutableList.copyOf(splitSpecs);
     }
 
