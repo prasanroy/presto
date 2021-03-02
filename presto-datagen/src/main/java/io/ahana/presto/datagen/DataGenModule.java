@@ -25,7 +25,6 @@ import javax.inject.Inject;
 
 import static com.facebook.airlift.configuration.ConfigBinder.configBinder;
 import static com.facebook.airlift.json.JsonBinder.jsonBinder;
-import static com.facebook.airlift.json.JsonCodec.listJsonCodec;
 import static com.facebook.airlift.json.JsonCodecBinder.jsonCodecBinder;
 import static com.facebook.presto.common.type.TypeSignature.parseTypeSignature;
 import static java.util.Objects.requireNonNull;
@@ -45,16 +44,15 @@ public class DataGenModule
     {
         binder.bind(TypeManager.class).toInstance(typeManager);
 
-        binder.bind(DataGenConnector.class).in(Scopes.SINGLETON);
-        binder.bind(DataGenMetadata.class).in(Scopes.SINGLETON);
+        jsonBinder(binder).addDeserializerBinding(Type.class).to(TypeDeserializer.class);
+        configBinder(binder).bindConfig(DataGenConfig.class);
+        jsonCodecBinder(binder).bindListJsonCodec(DataGenSchema.class);
+
         binder.bind(DataGen.class).in(Scopes.SINGLETON);
+        binder.bind(DataGenMetadata.class).in(Scopes.SINGLETON);
         binder.bind(DataGenSplitManager.class).in(Scopes.SINGLETON);
         binder.bind(DataGenRecordSetProvider.class).in(Scopes.SINGLETON);
-
-        configBinder(binder).bindConfig(DataGenConfig.class);
-
-        jsonBinder(binder).addDeserializerBinding(Type.class).to(TypeDeserializer.class);
-        jsonCodecBinder(binder).bindListJsonCodec(listJsonCodec(DataGenTable.class));
+        binder.bind(DataGenConnector.class).in(Scopes.SINGLETON);
     }
 
     public static final class TypeDeserializer
