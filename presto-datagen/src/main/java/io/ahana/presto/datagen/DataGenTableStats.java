@@ -16,6 +16,7 @@ package io.ahana.presto.datagen;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects.ToStringHelper;
+import com.google.common.collect.ImmutableList;
 
 import java.util.List;
 import java.util.Map;
@@ -50,9 +51,9 @@ public final class DataGenTableStats
     }
 
     @JsonProperty
-    public Map<String, DataGenColumnStats> getColumnStats()
+    public List<DataGenColumnStats> getColumnStats()
     {
-        return columnStats;
+        return ImmutableList.copyOf(columnStats.values());
     }
 
     public Optional<DataGenColumnStats> getColumnStats(String columnName)
