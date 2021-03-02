@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -44,17 +45,13 @@ public class DataGen
         requireNonNull(config, "config is null");
         requireNonNull(jsonCodec, "jsonCodec is null");
 
-        String json;
-        try {
-            json = Resources.toString(config.getMetadataUri().toURL(), UTF_8);
-        }
-        catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+        String catalogJson = getCatalogJson(config.getCatalogFileName());
+        requireNonNull(catalogJson, "catalogJson is null");
 
-        List<DataGenSchema> schemas = jsonCodec.fromJson(json);
-        requireNonNull(schemas, "schemas is null");
-        this.schemas = uniqueIndex(schemas, DataGenSchema::getName);
+        List<DataGenSchema> schemaList = jsonCodec.fromJson(catalogJson);
+        requireNonNull(schemaList, "schemaList is null");
+
+        this.schemas = uniqueIndex(schemaList, DataGenSchema::getName);
     }
 
     public Set<String> getSchemaNames()
@@ -78,5 +75,21 @@ public class DataGen
     public Optional<DataGenTable> getTable(String schemaName, String tableName)
     {
         return getSchema(schemaName).map(schema -> schema.getTable(tableName));
+    }
+
+    private static String getCatalogJson(String catalogFileName)
+    {
+        String catalogJson;
+
+        requireNonNull(catalogFileName, "catalogFileName is not set");
+        try {
+            URL catalogJsonUrl = Resources.getResource(catalogFileName);
+            catalogJson = Resources.toString(catalogJsonUrl, UTF_8);
+        }
+        catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+
+        return catalogJson;
     }
 }

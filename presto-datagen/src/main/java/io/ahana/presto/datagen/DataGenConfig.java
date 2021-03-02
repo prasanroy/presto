@@ -17,22 +17,22 @@ import com.facebook.airlift.configuration.Config;
 
 import javax.validation.constraints.NotNull;
 
-import java.net.URI;
+import static java.util.Objects.requireNonNull;
 
 public class DataGenConfig
 {
-    private URI metadataUri;
+    private String catalogFileName;
 
-    @NotNull
-    public URI getMetadataUri()
+    @Config("datagen.catalog.file.name")
+    public DataGenConfig setCatalogFileName(String catalogFileName)
     {
-        return metadataUri;
+        this.catalogFileName = requireNonNull(catalogFileName);
+        return this;
     }
 
-    @Config("datagen.metadata-uri")
-    public DataGenConfig setMetadataUri(URI metadataUri)
+    @NotNull
+    public String getCatalogFileName()
     {
-        this.metadataUri = metadataUri;
-        return this;
+        return catalogFileName;
     }
 }
