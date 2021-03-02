@@ -1,140 +1,142 @@
-[{
-    "name": "FIRST",
-    "tables": [
-        {
-            "name": "TA",
-            "columns": [
-                {
-                    "name": "X",
-                    "type": "BIGINT"
-                },
-                {
-                    "name": "Y",
-                    "type": "DOUBLE"
-                }
-            ],
-            "splitSpecs": [
-                {
-                    "rowCount": 10,
-                    "columnStats": [
-                        {
-                            "name": "X",
-                            "min": 1,
-                            "max": 3,
-                            "distinctValsCount": 2,
-                            "nullsCount": 0,
-                            "dataSize": null
-                        },
-                        {
-                            "name": "Y",
-                            "min": 5.5,
-                            "max": 7.0,
-                            "distinctValsCount": 3,
-                            "nullsCount": 0,
-                            "dataSize": null
-                        }
-                    ]
-                },
-                {
-                    "rowCount": 5,
-                    "columnStats": [
-                        {
-                            "name": "X",
-                            "min": 4,
-                            "max": 9,
-                            "distinctValsCount": 3,
-                            "nullsCount": 0,
-                            "dataSize": null
-                        },
-                        {
-                            "name": "Y",
-                            "min": 0.0,
-                            "max": 9.0,
-                            "distinctValsCount": 5,
-                            "nullsCount": 0,
-                            "dataSize": null
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "name": "TB",
-            "columns": [
-                {
-                    "name": "U",
-                    "type": "INT"
-                }
-            ],
-            "splitSpecs": [
-                {
-                    "rowCount": 10,
-                    "columnStats": [
-                        {
-                            "name": "U",
-                            "min": 1,
-                            "max": 3,
-                            "distinctValsCount": 2,
-                            "nullsCount": 0,
-                            "dataSize": null
-                        }
-                    ]
-                },
-                {
-                    "rowCount": 5,
-                    "columnStats": [
-                        {
-                            "name": "U",
-                            "min": 4,
-                            "max": 9,
-                            "distinctValsCount": 3,
-                            "nullsCount": 0,
-                            "dataSize": null
-                        }
-                    ]
-                }
-            ]
-        }
-    ]
-},
-{
-    "name": "second",
-    "tables": [
-        {
-            "name": "TB",
-            "columns": [
-                {
-                    "name": "U",
-                    "type": "INT"
-                },
-                {
-                    "name": "V",
-                    "type": "DOUBLE"
-                }
-            ],
-            "splitSpecs": [
-                {
-                    "rowCount": 10,
-                    "columnStats": [
-                        {
-                            "name": "U",
-                            "min": 1,
-                            "max": 3,
-                            "distinctValsCount": 2,
-                            "nullsCount": 0,
-                            "dataSize": null
-                        },
-                        {
-                            "name": "V",
-                            "min": 5.5,
-                            "max": 7.0,
-                            "distinctValsCount": 3,
-                            "nullsCount": 0,
-                            "dataSize": null
-                        }
-                    ]
-                }
-            ]
-        }
-    ]
-}]
+[
+    {
+        "name": "FIRST",
+        "tables": [
+            {
+                "name": "TA",
+                "columns": [
+                    {
+                        "name": "X",
+                        "type": "BIGINT"
+                    },
+                    {
+                        "name": "Y",
+                        "type": "DOUBLE"
+                    }
+                ],
+                "splitSpecs": [
+                    {
+                        "rowCount": 10,
+                        "columnStats": [
+                            {
+                                "name": "X",
+                                "min": 1,
+                                "max": 3,
+                                "distinctValsCount": 2,
+                                "nullsCount": 0,
+                                "dataSize": null
+                            },
+                            {
+                                "name": "Y",
+                                "min": 5.5,
+                                "max": 7.0,
+                                "distinctValsCount": 3,
+                                "nullsCount": 0,
+                                "dataSize": null
+                            }
+                        ]
+                    },
+                    {
+                        "rowCount": 5,
+                        "columnStats": [
+                            {
+                                "name": "X",
+                                "min": 4,
+                                "max": 9,
+                                "distinctValsCount": 3,
+                                "nullsCount": 0,
+                                "dataSize": null
+                            },
+                            {
+                                "name": "Y",
+                                "min": 0.0,
+                                "max": 9.0,
+                                "distinctValsCount": 5,
+                                "nullsCount": 0,
+                                "dataSize": null
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "name": "TB",
+                "columns": [
+                    {
+                        "name": "U",
+                        "type": "INTEGER"
+                    }
+                ],
+                "splitSpecs": [
+                    {
+                        "rowCount": 10,
+                        "columnStats": [
+                            {
+                                "name": "U",
+                                "min": 1,
+                                "max": 3,
+                                "distinctValsCount": 2,
+                                "nullsCount": 0,
+                                "dataSize": null
+                            }
+                        ]
+                    },
+                    {
+                        "rowCount": 5,
+                        "columnStats": [
+                            {
+                                "name": "U",
+                                "min": 4,
+                                "max": 9,
+                                "distinctValsCount": 3,
+                                "nullsCount": 0,
+                                "dataSize": null
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "SECOND",
+        "tables": [
+            {
+                "name": "TB",
+                "columns": [
+                    {
+                        "name": "U",
+                        "type": "INTEGER"
+                    },
+                    {
+                        "name": "V",
+                        "type": "DOUBLE"
+                    }
+                ],
+                "splitSpecs": [
+                    {
+                        "rowCount": 10,
+                        "columnStats": [
+                            {
+                                "name": "U",
+                                "min": 1,
+                                "max": 3,
+                                "distinctValsCount": 2,
+                                "nullsCount": 0,
+                                "dataSize": null
+                            },
+                            {
+                                "name": "V",
+                                "min": 5.5,
+                                "max": 7.0,
+                                "distinctValsCount": 3,
+                                "nullsCount": 0,
+                                "dataSize": null
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]
