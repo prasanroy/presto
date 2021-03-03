@@ -14,9 +14,15 @@
 package io.ahana.presto.datagen;
 
 import com.facebook.airlift.configuration.Config;
+import com.google.common.io.Resources;
 
 import javax.validation.constraints.NotNull;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.net.URL;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.requireNonNull;
 
 public class DataGenConfig
@@ -34,5 +40,22 @@ public class DataGenConfig
     public String getCatalogFileName()
     {
         return catalogFileName;
+    }
+
+    @NotNull
+    public String getCatalogJson()
+    {
+        String catalogJson;
+
+        requireNonNull(catalogFileName, "catalogFileName is null");
+        try {
+            URL catalogJsonUrl = Resources.getResource(catalogFileName);
+            catalogJson = Resources.toString(catalogJsonUrl, UTF_8);
+        }
+        catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+
+        return catalogJson;
     }
 }

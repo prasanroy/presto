@@ -42,18 +42,18 @@ import static java.util.Objects.requireNonNull;
 public class DataGenMetadata
         implements ConnectorMetadata
 {
-    private final DataGen datagen;
+    private final DataGenCatalog dataGenCatalog;
 
     @Inject
-    public DataGenMetadata(DataGen datagen)
+    public DataGenMetadata(DataGenCatalog dataGenCatalog)
     {
-        this.datagen = requireNonNull(datagen, "client is null");
+        this.dataGenCatalog = requireNonNull(dataGenCatalog, "client is null");
     }
 
     @Override
     public List<String> listSchemaNames(ConnectorSession session)
     {
-        return ImmutableList.copyOf(datagen.getSchemaNames());
+        return ImmutableList.copyOf(dataGenCatalog.getSchemaNames());
     }
 
     @Override
@@ -64,7 +64,7 @@ public class DataGenMetadata
         String schemaName = table.getSchemaName();
         String tableName = table.getTableName();
 
-        if (datagen.getTable(schemaName, tableName).isPresent()) {
+        if (dataGenCatalog.getTable(schemaName, tableName).isPresent()) {
             return new DataGenTableHandle(schemaName, tableName);
         }
 
@@ -110,7 +110,7 @@ public class DataGenMetadata
     {
         Set<String> schemaNames;
         if (schemaNameOrNull == null) {
-            schemaNames = datagen.getSchemaNames();
+            schemaNames = dataGenCatalog.getSchemaNames();
         }
         else {
             schemaNames = ImmutableSet.of(schemaNameOrNull);
@@ -118,7 +118,7 @@ public class DataGenMetadata
 
         ImmutableList.Builder<SchemaTableName> builder = ImmutableList.builder();
         for (String schemaName : schemaNames) {
-            for (String tableName : datagen.getTableNames(schemaName)) {
+            for (String tableName : dataGenCatalog.getTableNames(schemaName)) {
                 builder.add(new SchemaTableName(schemaName, tableName));
             }
         }
@@ -136,7 +136,7 @@ public class DataGenMetadata
         String schemaName = tableHandle.getSchemaName();
         String tableName = tableHandle.getTableName();
 
-        DataGenTable table = datagen.getTable(schemaName, tableName).orElseThrow(() -> new TableNotFoundException(tableHandle.toSchemaTableName()));
+        DataGenTable table = dataGenCatalog.getTable(schemaName, tableName).orElseThrow(() -> new TableNotFoundException(tableHandle.toSchemaTableName()));
 
         ImmutableMap.Builder<String, ColumnHandle> columnHandles = ImmutableMap.builder();
         int index = 0;
@@ -170,7 +170,7 @@ public class DataGenMetadata
         String schemaName = schemaTable.getSchemaName();
         String tableName = schemaTable.getTableName();
 
-        return datagen.getTable(schemaName, tableName).map(table ->
+        return dataGenCatalog.getTable(schemaName, tableName).map(table ->
             new ConnectorTableMetadata(schemaTable, table.getColumnsMetadata()));
     }
 

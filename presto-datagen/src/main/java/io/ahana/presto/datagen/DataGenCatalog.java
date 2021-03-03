@@ -13,15 +13,10 @@
  */
 package io.ahana.presto.datagen;
 
-import com.facebook.airlift.json.JsonCodec;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.io.Resources;
 
 import javax.inject.Inject;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -30,27 +25,21 @@ import java.util.Set;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Maps.uniqueIndex;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.requireNonNull;
 
-public class DataGen
+public class DataGenCatalog
 {
     private final Map<String, DataGenSchema> schemas;
 
     @Inject
-    public DataGen(
-            DataGenConfig config,
-            JsonCodec<List<DataGenSchema>> jsonCodec)
+    public DataGenCatalog(DataGenCatalogParser parser, DataGenConfig config)
     {
-        requireNonNull(config, "config is null");
-        requireNonNull(jsonCodec, "jsonCodec is null");
+        this(parser.parseCatalogJson(config.getCatalogJson()));
+    }
 
-        String catalogJson = getCatalogJson(config.getCatalogFileName());
-        requireNonNull(catalogJson, "catalogJson is null");
-
-        List<DataGenSchema> schemaList = jsonCodec.fromJson(catalogJson);
+    public DataGenCatalog(List<DataGenSchema> schemaList)
+    {
         requireNonNull(schemaList, "schemaList is null");
-
         this.schemas = uniqueIndex(schemaList, DataGenSchema::getName);
     }
 
@@ -75,21 +64,5 @@ public class DataGen
     public Optional<DataGenTable> getTable(String schemaName, String tableName)
     {
         return getSchema(schemaName).map(schema -> schema.getTable(tableName));
-    }
-
-    private static String getCatalogJson(String catalogFileName)
-    {
-        String catalogJson;
-
-        requireNonNull(catalogFileName, "catalogFileName is not set");
-        try {
-            URL catalogJsonUrl = Resources.getResource(catalogFileName);
-            catalogJson = Resources.toString(catalogJsonUrl, UTF_8);
-        }
-        catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-
-        return catalogJson;
     }
 }

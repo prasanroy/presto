@@ -48,7 +48,8 @@ public class DataGenModule
         configBinder(binder).bindConfig(DataGenConfig.class);
         jsonCodecBinder(binder).bindListJsonCodec(DataGenSchema.class);
 
-        binder.bind(DataGen.class).in(Scopes.SINGLETON);
+        binder.bind(DataGenCatalogParser.class).in(Scopes.SINGLETON);
+        binder.bind(DataGenCatalog.class).in(Scopes.SINGLETON);
         binder.bind(DataGenMetadata.class).in(Scopes.SINGLETON);
         binder.bind(DataGenSplitManager.class).in(Scopes.SINGLETON);
         binder.bind(DataGenRecordSetProvider.class).in(Scopes.SINGLETON);

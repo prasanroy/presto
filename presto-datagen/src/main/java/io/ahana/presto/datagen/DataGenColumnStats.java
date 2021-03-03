@@ -33,6 +33,15 @@ public final class DataGenColumnStats
     private final long nullsCount;
     private final Optional<Long> dataSize;
 
+    public DataGenColumnStats(
+            String name, Object min,
+            Object max, long distinctValsCount)
+    {
+        this(name, Optional.of(min), Optional.of(max),
+                Optional.of(Long.valueOf(distinctValsCount)),
+                Optional.empty(), Optional.empty());
+    }
+
     @JsonCreator
     public DataGenColumnStats(
             @JsonProperty("name") String name,

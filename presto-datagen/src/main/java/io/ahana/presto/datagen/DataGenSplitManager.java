@@ -33,12 +33,12 @@ import static java.util.Objects.requireNonNull;
 public class DataGenSplitManager
         implements ConnectorSplitManager
 {
-    private final DataGen datagen;
+    private final DataGenCatalog dataGenCatalog;
 
     @Inject
-    public DataGenSplitManager(DataGen datagen)
+    public DataGenSplitManager(DataGenCatalog dataGenCatalog)
     {
-        this.datagen = requireNonNull(datagen, "client is null");
+        this.dataGenCatalog = requireNonNull(dataGenCatalog, "client is null");
     }
 
     @Override
@@ -55,7 +55,7 @@ public class DataGenSplitManager
 
         String schemaName = tableHandle.getSchemaName();
         String tableName = tableHandle.getTableName();
-        datagen.getTable(schemaName, tableName).ifPresent(table -> {
+        dataGenCatalog.getTable(schemaName, tableName).ifPresent(table -> {
             // this can happen if table is removed during a query
             checkState(table != null, "Table %s.%s no longer exists", schemaName, tableName);
 
