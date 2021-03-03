@@ -55,7 +55,7 @@ public final class DataGenColumnStats
         this.name = name;
 
         this.min = requireNonNull(min, "min is null");
-        this.max = requireNonNull(min, "max is null");
+        this.max = requireNonNull(max, "max is null");
 
         requireNonNull(distinctValsCount, "distinctValsCount is null");
         checkArgument(distinctValsCount.isPresent() && distinctValsCount.get() > 0, "distinctValsCount is non-positive");
