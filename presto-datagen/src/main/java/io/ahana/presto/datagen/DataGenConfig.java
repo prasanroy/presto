@@ -27,19 +27,20 @@ import static java.util.Objects.requireNonNull;
 
 public class DataGenConfig
 {
-    private String catalogFileName;
+    private URL catalogUrl;
 
-    @Config("datagen.catalog.file.name")
-    public DataGenConfig setCatalogFileName(String catalogFileName)
+    @Config("datagen.catalog.url")
+    public DataGenConfig setCatalogUrl(URL catalogUrl)
     {
-        this.catalogFileName = requireNonNull(catalogFileName);
+        requireNonNull(catalogUrl, "catalogUrl is null");
+        this.catalogUrl = catalogUrl;
         return this;
     }
 
     @NotNull
-    public String getCatalogFileName()
+    public URL getCatalogUrl()
     {
-        return catalogFileName;
+        return catalogUrl;
     }
 
     @NotNull
@@ -47,10 +48,8 @@ public class DataGenConfig
     {
         String catalogJson;
 
-        requireNonNull(catalogFileName, "catalogFileName is null");
         try {
-            URL catalogJsonUrl = Resources.getResource(catalogFileName);
-            catalogJson = Resources.toString(catalogJsonUrl, UTF_8);
+            catalogJson = Resources.toString(catalogUrl, UTF_8);
         }
         catch (IOException e) {
             throw new UncheckedIOException(e);
