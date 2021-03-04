@@ -121,7 +121,7 @@ public class DataGenRecordCursor
     @Override
     public Slice getSlice(int colIndex)
     {
-        return Slices.utf8Slice(getObject(colIndex).toString());
+        return (Slice) getObject(colIndex);
     }
 
     @Override
