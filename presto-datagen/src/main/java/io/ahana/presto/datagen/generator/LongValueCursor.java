@@ -26,8 +26,8 @@ public class LongValueCursor
 
     private final Type valueType;
 
-    private final Long min;
-    private final Long max;
+    private final long min;
+    private final long max;
     private final long distinctValsCount;
 
     private long value;
@@ -39,15 +39,15 @@ public class LongValueCursor
     {
         this.valueType = requireNonNull(valueType, "value type is null");
 
-        this.min = (Long) spec.getMin().orElse(0L);
+        this.min = ((Number) spec.getMin().orElse(0L)).longValue();
         checkArgument(this.min >= 0, "min is negative, only positive values allowed");
-        this.max = (Long) spec.getMax().orElse(Long.MAX_VALUE);
+        this.max = ((Number) spec.getMax().orElse(Long.MAX_VALUE)).longValue();
         checkArgument(this.max >= 0, "max is negative, only positive values allowed");
         checkArgument(this.min <= this.max, "max is less than min");
 
         this.distinctValsCount = spec.getDistinctValsCount().orElse(Math.min(this.max - this.min + 1, MAX_DISTINCTVALSCOUNT));
         checkArgument(this.distinctValsCount >= 1, "distinct value count must be greater or equal to one");
-        checkArgument(this.max - this.min >= this.distinctValsCount - 1, "distinct values count cannot be accomodated in the given min-max range");
+        checkArgument(this.max - this.min >= this.distinctValsCount - 1, String.format("distinct values count %d cannot be accomodated in the given min-max range [%d, %d]", this.distinctValsCount, this.min, this.max));
 
         if (this.distinctValsCount == 1) {
             this.increment = 0.0;

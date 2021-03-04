@@ -26,8 +26,8 @@ public class DoubleValueCursor
 
     private final Type valueType;
 
-    private final Double min;
-    private final Double max;
+    private final double min;
+    private final double max;
     private final long distinctValsCount;
 
     private double value;
@@ -39,15 +39,14 @@ public class DoubleValueCursor
     {
         this.valueType = requireNonNull(valueType, "value type is null");
 
-        this.min = (Double) spec.getMin().orElse(0);
+        this.min = ((Double) spec.getMin().orElse(0)).doubleValue();
         checkArgument(this.min >= 0, "min is negative, only positive values allowed");
-        this.max = (Double) spec.getMax().orElse(Double.MAX_VALUE);
+        this.max = ((Double) spec.getMax().orElse(Double.MAX_VALUE)).doubleValue();
         checkArgument(this.max >= 0, "max is negative, only positive values allowed");
         checkArgument(this.min <= this.max, "max is less than min");
 
         this.distinctValsCount = spec.getDistinctValsCount().orElse((long) Math.min(this.max - this.min + 1, MAX_DISTINCTVALSCOUNT));
         checkArgument(this.distinctValsCount >= 1, "distinct value count must be greater or equal to one");
-        checkArgument(this.max - this.min >= this.distinctValsCount - 1, "distinct value count cannot be accomodated in the given min-max range");
 
         if (this.distinctValsCount == 1) {
             this.increment = 0.0;
