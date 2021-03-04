@@ -14,7 +14,6 @@
 package io.ahana.presto.datagen.generator;
 
 import com.facebook.presto.common.type.Type;
-import io.ahana.presto.datagen.DataGenColumnStats;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
@@ -31,17 +30,18 @@ public class BooleanValueCursor
     private boolean value;
     private boolean nextValue;
 
-    public BooleanValueCursor(Type valueType, DataGenColumnStats spec)
+    public BooleanValueCursor(
+            Type valueType, boolean min, boolean max, long distinctValsCount)
     {
         this.valueType = requireNonNull(valueType, "value type is null");
 
-        this.min = (Boolean) spec.getMin().orElse(false);
-        this.max = (Boolean) spec.getMax().orElse(true);
+        this.min = min;
+        this.max = max;
         checkArgument(!this.min || this.max, "max is less than min");
 
-        this.distinctValsCount = spec.getDistinctValsCount().orElse(2L);
+        this.distinctValsCount = distinctValsCount;
         checkArgument(this.distinctValsCount == 1 || this.distinctValsCount == 2, "distinct values count must be either one or two");
-        checkArgument(this.max == this.min || this.distinctValsCount == 2, "distinct values count cannot be accomodated in the given min-max range");
+        checkArgument(this.max == this.min || this.distinctValsCount == 2, String.format("distinct values count %d cannot be accomodated in the given min-max range [%s, %s]", this.distinctValsCount, this.min.toString(), this.max.toString()));
 
         this.value = false;
         this.nextValue = this.min;

@@ -14,7 +14,6 @@
 package io.ahana.presto.datagen.generator;
 
 import com.facebook.presto.common.type.Type;
-import io.ahana.presto.datagen.DataGenColumnStats;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
@@ -22,8 +21,6 @@ import static java.util.Objects.requireNonNull;
 public class LongValueCursor
         implements ValueCursor
 {
-    public static final long MAX_DISTINCTVALSCOUNT = 100;
-
     private final Type valueType;
 
     private final long min;
@@ -35,17 +32,18 @@ public class LongValueCursor
     private double nextValue;
     private double increment;
 
-    public LongValueCursor(Type valueType, DataGenColumnStats spec)
+    public LongValueCursor(
+            Type valueType, long min, long max, long distinctValsCount)
     {
         this.valueType = requireNonNull(valueType, "value type is null");
 
-        this.min = ((Number) spec.getMin().orElse(0L)).longValue();
+        this.min = min;
         checkArgument(this.min >= 0, "min is negative, only positive values allowed");
-        this.max = ((Number) spec.getMax().orElse(Long.MAX_VALUE)).longValue();
+        this.max = max;
         checkArgument(this.max >= 0, "max is negative, only positive values allowed");
         checkArgument(this.min <= this.max, "max is less than min");
 
-        this.distinctValsCount = spec.getDistinctValsCount().orElse(Math.min(this.max - this.min + 1, MAX_DISTINCTVALSCOUNT));
+        this.distinctValsCount = distinctValsCount;
         checkArgument(this.distinctValsCount >= 1, "distinct value count must be greater or equal to one");
         checkArgument(this.max - this.min >= this.distinctValsCount - 1, String.format("distinct values count %d cannot be accomodated in the given min-max range [%d, %d]", this.distinctValsCount, this.min, this.max));
 
