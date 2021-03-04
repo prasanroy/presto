@@ -15,10 +15,16 @@ package io.ahana.presto.datagen.generator;
 
 import com.facebook.presto.common.block.Block;
 import com.facebook.presto.common.type.Type;
+import com.google.common.collect.ImmutableList;
 import io.ahana.presto.datagen.DataGenColumnStats;
-import io.airlift.slice.Slice;
 
 import java.util.Optional;
+
+import static com.facebook.presto.common.type.BigintType.BIGINT;
+import static com.facebook.presto.common.type.BooleanType.BOOLEAN;
+import static com.facebook.presto.common.type.DoubleType.DOUBLE;
+import static com.facebook.presto.common.type.IntegerType.INTEGER;
+import static com.facebook.presto.common.type.VarcharType.VARCHAR;
 
 public class ValueCursorFactory
 {
@@ -30,21 +36,21 @@ public class ValueCursorFactory
 
         DataGenColumnStats columnSpec = columnSpecOpt.get();
 
-        if (columnType.getJavaType() == long.class) {
+        if (ImmutableList.of(INTEGER, BIGINT).contains(columnType)) {
             return new LongValueCursor(columnType, columnSpec);
         }
-        else if (columnType.getJavaType() == double.class) {
+        else if (ImmutableList.of(DOUBLE).contains(columnType)) {
             return new DoubleValueCursor(columnType, columnSpec);
         }
-        else if (columnType.getJavaType() == boolean.class) {
+        else if (ImmutableList.of(BOOLEAN).contains(columnType)) {
             return new BooleanValueCursor(columnType, columnSpec);
         }
-        else if (columnType.getJavaType() == Slice.class) {
-            throw new UnsupportedOperationException();
+        else if (ImmutableList.of(VARCHAR).contains(columnType)) {
+            throw new UnsupportedOperationException("VARCHAR not supported");
             // return new SliceValueCursor(columnType, columnSpec);
         }
         else if (columnType.getJavaType() == Block.class) {
-            throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException("BLOCK types not supported");
             // return new BlockValueCursor(columnType, columnSpec);
         }
         else {
