@@ -22,6 +22,8 @@ import java.util.List;
 
 import static com.facebook.presto.common.type.BigintType.BIGINT;
 import static com.facebook.presto.common.type.DoubleType.DOUBLE;
+import static com.facebook.presto.common.type.IntegerType.INTEGER;
+import static com.facebook.presto.common.type.VarcharType.VARCHAR;
 import static io.ahana.presto.datagen.TestDataGenCatalog.TEST_CATALOG;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
@@ -70,6 +72,35 @@ public class TestDataGenRecordSet
 
         assertEquals(vals0.build(), ImmutableList.of(4L, 6L, 9L, 4L));
         assertEquals(vals1.build(), ImmutableList.of(0.0, 3.0, 6.0, 9.0));
+    }
+
+    @Test(enabled = false)
+    public void testCursorVarchar()
+    {
+        DataGenTable table = TEST_CATALOG.getTable("second", "tb").get();
+        RecordSet recordSet = new DataGenRecordSet(
+                table.getSplitSpecs().get(0),
+                columnHandles(table.getColumns()));
+
+        RecordCursor cursor = recordSet.cursor();
+
+        assertEquals(cursor.getType(0), INTEGER);
+        assertEquals(cursor.getType(1), DOUBLE);
+        assertEquals(cursor.getType(1), VARCHAR);
+
+        ImmutableList.Builder<Long> vals0 = ImmutableList.builder();
+        ImmutableList.Builder<Double> vals1 = ImmutableList.builder();
+
+        while (cursor.advanceNextPosition()) {
+            assertFalse(cursor.isNull(0));
+            vals0.add(cursor.getLong(0));
+
+            assertFalse(cursor.isNull(1));
+            vals1.add(cursor.getDouble(1));
+        }
+
+        assertEquals(vals0.build(), ImmutableList.of(1, 3, 1, 3, 1));
+        assertEquals(vals1.build(), ImmutableList.of(5.5, 6.0, 6.5, 7.0, 5.5));
     }
 
     private List<DataGenColumnHandle> columnHandles(List<DataGenColumn> columns)

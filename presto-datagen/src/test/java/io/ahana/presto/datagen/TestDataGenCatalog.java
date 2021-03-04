@@ -22,6 +22,7 @@ import java.util.Optional;
 import static com.facebook.presto.common.type.BigintType.BIGINT;
 import static com.facebook.presto.common.type.DoubleType.DOUBLE;
 import static com.facebook.presto.common.type.IntegerType.INTEGER;
+import static com.facebook.presto.common.type.VarcharType.VARCHAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -84,11 +85,13 @@ public class TestDataGenCatalog
                             "tb",
                             ImmutableList.of(
                                 new DataGenColumn("u", INTEGER),
-                                new DataGenColumn("v", DOUBLE)),
+                                new DataGenColumn("v", DOUBLE),
+                                new DataGenColumn("w", VARCHAR)),
                             ImmutableList.of(
                                 new DataGenTableStats(
-                                    10,
+                                    5,
                                     ImmutableList.of(
                                         new DataGenColumnStats("u", 1, 3, 2),
-                                        new DataGenColumnStats("v", 5.5, 7.0, 3)))))))));
+                                        new DataGenColumnStats("v", 5.5, 7.0, 3),
+                                        new DataGenColumnStats("w", "AA", "ZZ", 3)))))))));
 }
