@@ -74,7 +74,7 @@ public class TestDataGenRecordSet
         assertEquals(vals1.build(), ImmutableList.of(0.0, 3.0, 6.0, 9.0));
     }
 
-    @Test(enabled = false)
+    @Test
     public void testCursorVarchar()
     {
         DataGenTable table = TEST_CATALOG.getTable("second", "tb").get();
@@ -86,10 +86,11 @@ public class TestDataGenRecordSet
 
         assertEquals(cursor.getType(0), INTEGER);
         assertEquals(cursor.getType(1), DOUBLE);
-        assertEquals(cursor.getType(1), VARCHAR);
+        assertEquals(cursor.getType(2), VARCHAR);
 
         ImmutableList.Builder<Long> vals0 = ImmutableList.builder();
         ImmutableList.Builder<Double> vals1 = ImmutableList.builder();
+        ImmutableList.Builder<String> vals2 = ImmutableList.builder();
 
         while (cursor.advanceNextPosition()) {
             assertFalse(cursor.isNull(0));
@@ -97,10 +98,14 @@ public class TestDataGenRecordSet
 
             assertFalse(cursor.isNull(1));
             vals1.add(cursor.getDouble(1));
+
+            assertFalse(cursor.isNull(2));
+            vals2.add(cursor.getSlice(2).toStringUtf8());
         }
 
-        assertEquals(vals0.build(), ImmutableList.of(1, 3, 1, 3, 1));
-        assertEquals(vals1.build(), ImmutableList.of(5.5, 6.0, 6.5, 7.0, 5.5));
+        assertEquals(vals0.build(), ImmutableList.of(1L, 3L, 1L, 3L, 1L));
+        assertEquals(vals1.build(), ImmutableList.of(5.5, 6.25, 7.0, 5.5, 6.25));
+        assertEquals(vals2.build(), ImmutableList.of("BAX", "CAK", "CZX", "BAX", "CAK"));
     }
 
     private List<DataGenColumnHandle> columnHandles(List<DataGenColumn> columns)

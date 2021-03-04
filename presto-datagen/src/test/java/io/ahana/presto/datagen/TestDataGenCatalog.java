@@ -93,5 +93,5 @@ public class TestDataGenCatalog
                                     ImmutableList.of(
                                         new DataGenColumnStats("u", 1, 3, 2),
                                         new DataGenColumnStats("v", 5.5, 7.0, 3),
-                                        new DataGenColumnStats("w", "AA", "ZZ", 3)))))))));
+                                        new DataGenColumnStats("w", "BAX", "CZX", 3)))))))));
 }

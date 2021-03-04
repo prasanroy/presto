@@ -46,8 +46,7 @@ public class ValueCursorFactory
             return BooleanValueCursor.create(columnType, columnSpec);
         }
         else if (ImmutableList.of(VARCHAR).contains(columnType)) {
-            throw new UnsupportedOperationException("VARCHAR not supported");
-            // return new SliceValueCursor(columnType, columnSpec);
+            return StringValueCursor.create(columnType, columnSpec);
         }
         else if (columnType.getJavaType() == Block.class) {
             throw new UnsupportedOperationException("BLOCK types not supported");
