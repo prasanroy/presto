@@ -14,6 +14,7 @@
 package io.ahana.presto.datagen.generator;
 
 import com.facebook.presto.common.type.Type;
+import io.ahana.presto.datagen.DataGenColumnStats;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
@@ -41,7 +42,7 @@ public class BooleanValueCursor
 
         this.distinctValsCount = distinctValsCount;
         checkArgument(this.distinctValsCount == 1 || this.distinctValsCount == 2, "distinct values count must be either one or two");
-        checkArgument(this.max == this.min || this.distinctValsCount == 2, String.format("distinct values count %d cannot be accomodated in the given min-max range [%s, %s]", this.distinctValsCount, this.min.toString(), this.max.toString()));
+        checkArgument(this.max == this.min || this.distinctValsCount == 2, String.format("distinct values count %d cannot be accomodated in the given min-max range", this.distinctValsCount));
 
         this.value = false;
         this.nextValue = this.min;
@@ -70,5 +71,17 @@ public class BooleanValueCursor
     {
         value = nextValue;
         nextValue = this.max;
+    }
+
+    public static BooleanValueCursor create(
+            Type columnType, DataGenColumnStats columnSpec)
+    {
+        requireNonNull(columnSpec, "columnSpec is null");
+
+        boolean min = ((Boolean) columnSpec.getMin().orElse(false)).booleanValue();
+        boolean max = ((Boolean) columnSpec.getMax().orElse(true)).booleanValue();
+        long distinctValsCount = columnSpec.getDistinctValsCount().orElse(2L);
+
+        return new BooleanValueCursor(columnType, min, max, distinctValsCount);
     }
 }

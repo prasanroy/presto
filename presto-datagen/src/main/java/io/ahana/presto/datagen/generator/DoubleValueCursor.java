@@ -14,6 +14,7 @@
 package io.ahana.presto.datagen.generator;
 
 import com.facebook.presto.common.type.Type;
+import io.ahana.presto.datagen.DataGenColumnStats;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
@@ -21,6 +22,8 @@ import static java.util.Objects.requireNonNull;
 public class DoubleValueCursor
         implements ValueCursor
 {
+    public static final long MAX_DISTINCTVALSCOUNT = 100;
+
     private final Type valueType;
 
     private final double min;
@@ -91,5 +94,17 @@ public class DoubleValueCursor
         else {
             nextValue += increment;
         }
+    }
+
+    public static DoubleValueCursor create(
+            Type columnType, DataGenColumnStats columnSpec)
+    {
+        requireNonNull(columnSpec, "columnSpec is null");
+
+        double min = ((Double) columnSpec.getMin().orElse(0)).doubleValue();
+        double max = ((Double) columnSpec.getMax().orElse(Double.MAX_VALUE)).doubleValue();
+        long distinctValsCount = columnSpec.getDistinctValsCount().orElse((long) Math.min(max - min + 1, MAX_DISTINCTVALSCOUNT));
+
+        return new DoubleValueCursor(columnType, min, max, distinctValsCount);
     }
 }

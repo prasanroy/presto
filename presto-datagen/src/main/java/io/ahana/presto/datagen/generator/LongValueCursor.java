@@ -14,6 +14,9 @@
 package io.ahana.presto.datagen.generator;
 
 import com.facebook.presto.common.type.Type;
+import io.ahana.presto.datagen.DataGenColumnStats;
+
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
@@ -21,6 +24,8 @@ import static java.util.Objects.requireNonNull;
 public class LongValueCursor
         implements ValueCursor
 {
+    public static final long MAX_DISTINCTVALSCOUNT = 100;
+
     private final Type valueType;
 
     private final long min;
@@ -33,7 +38,8 @@ public class LongValueCursor
     private double increment;
 
     public LongValueCursor(
-            Type valueType, long min, long max, long distinctValsCount)
+            Type valueType, long min, long max,
+            Optional<Long> distinctValsCountOpt)
     {
         this.valueType = requireNonNull(valueType, "value type is null");
 
@@ -43,9 +49,9 @@ public class LongValueCursor
         checkArgument(this.max >= 0, "max is negative, only positive values allowed");
         checkArgument(this.min <= this.max, "max is less than min");
 
-        this.distinctValsCount = distinctValsCount;
+        this.distinctValsCount = distinctValsCountOpt.orElse(Math.min(max - min + 1, MAX_DISTINCTVALSCOUNT));
         checkArgument(this.distinctValsCount >= 1, "distinct value count must be greater or equal to one");
-        checkArgument(this.max - this.min >= this.distinctValsCount - 1, String.format("distinct values count %d cannot be accomodated in the given min-max range [%d, %d]", this.distinctValsCount, this.min, this.max));
+        checkArgument(this.max - this.min >= this.distinctValsCount - 1, String.format("distinct values count %d cannot be accomodated in the given min-max range", this.distinctValsCount));
 
         if (this.distinctValsCount == 1) {
             this.increment = 0.0;
@@ -92,5 +98,16 @@ public class LongValueCursor
         else {
             nextValue += increment;
         }
+    }
+
+    public static LongValueCursor create(
+            Type columnType, DataGenColumnStats columnSpec)
+    {
+        requireNonNull(columnSpec, "columnSpec is null");
+
+        long min = ((Number) columnSpec.getMin().orElse(0L)).longValue();
+        long max = ((Number) columnSpec.getMax().orElse(Long.MAX_VALUE)).longValue();
+
+        return new LongValueCursor(columnType, min, max, columnSpec.getDistinctValsCount());
     }
 }

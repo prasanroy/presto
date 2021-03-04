@@ -28,8 +28,6 @@ import static com.facebook.presto.common.type.VarcharType.VARCHAR;
 
 public class ValueCursorFactory
 {
-    public static final long MAX_DISTINCTVALSCOUNT = 100;
-
     public ValueCursor create(Type columnType, Optional<DataGenColumnStats> columnSpecOpt)
     {
         if (!columnSpecOpt.isPresent()) {
@@ -39,24 +37,13 @@ public class ValueCursorFactory
         DataGenColumnStats columnSpec = columnSpecOpt.get();
 
         if (ImmutableList.of(INTEGER, BIGINT).contains(columnType)) {
-            long min = ((Number) columnSpec.getMin().orElse(0L)).longValue();
-            long max = ((Number) columnSpec.getMax().orElse(Long.MAX_VALUE)).longValue();
-            long distinctValsCount = columnSpec.getDistinctValsCount().orElse(Math.min(max - min + 1, MAX_DISTINCTVALSCOUNT));
-
-            return new LongValueCursor(columnType, min, max, distinctValsCount);
+            return LongValueCursor.create(columnType, columnSpec);
         }
         else if (ImmutableList.of(DOUBLE).contains(columnType)) {
-            double min = ((Double) columnSpec.getMin().orElse(0)).doubleValue();
-            double max = ((Double) columnSpec.getMax().orElse(Double.MAX_VALUE)).doubleValue();
-            long distinctValsCount = columnSpec.getDistinctValsCount().orElse((long) Math.min(max - min + 1, MAX_DISTINCTVALSCOUNT));
-
-            return new DoubleValueCursor(columnType, min, max, distinctValsCount);
+            return DoubleValueCursor.create(columnType, columnSpec);
         }
         else if (ImmutableList.of(BOOLEAN).contains(columnType)) {
-            boolean min = ((Boolean) columnSpec.getMin().orElse(false)).booleanValue();
-            boolean max = ((Boolean) columnSpec.getMax().orElse(true)).booleanValue();
-            long distinctValsCount = columnSpec.getDistinctValsCount().orElse(2L);
-            return new BooleanValueCursor(columnType, min, max, distinctValsCount);
+            return BooleanValueCursor.create(columnType, columnSpec);
         }
         else if (ImmutableList.of(VARCHAR).contains(columnType)) {
             throw new UnsupportedOperationException("VARCHAR not supported");
