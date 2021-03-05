@@ -30,16 +30,13 @@ public final class DataGenColumnStats
     private final Optional<Object> min;
     private final Optional<Object> max;
     private final Optional<Long> distinctValsCount;
-    private final long nullsCount;
-    private final Optional<Long> dataSize;
 
     public DataGenColumnStats(
             String name, Object min,
             Object max, long distinctValsCount)
     {
         this(name, Optional.of(min), Optional.of(max),
-                Optional.of(Long.valueOf(distinctValsCount)),
-                Optional.empty(), Optional.empty());
+                Optional.of(Long.valueOf(distinctValsCount)));
     }
 
     @JsonCreator
@@ -47,9 +44,7 @@ public final class DataGenColumnStats
             @JsonProperty("name") String name,
             @JsonProperty("min") Optional<Object> min,
             @JsonProperty("max") Optional<Object> max,
-            @JsonProperty("distinctValsCount") Optional<Long> distinctValsCount,
-            @JsonProperty("nullsCount") Optional<Long> nullsCount,
-            @JsonProperty("dataSize") Optional<Long> dataSize)
+            @JsonProperty("distinctValsCount") Optional<Long> distinctValsCount)
     {
         checkArgument(!isNullOrEmpty(name), "name is null or is empty");
         this.name = name;
@@ -60,14 +55,6 @@ public final class DataGenColumnStats
         requireNonNull(distinctValsCount, "distinctValsCount is null");
         checkArgument(distinctValsCount.isPresent() && distinctValsCount.get() > 0, "distinctValsCount is non-positive");
         this.distinctValsCount = distinctValsCount;
-
-        requireNonNull(nullsCount, "nullsCount is null");
-        checkArgument(!nullsCount.isPresent() || nullsCount.get() >= 0, "nullsCount is negative");
-        this.nullsCount = nullsCount.orElse(0L);
-
-        requireNonNull(dataSize, "dataSize is null");
-        checkArgument(!dataSize.isPresent() || dataSize.get() >= 0, "dataSize is negative");
-        this.dataSize = dataSize;
     }
 
     @JsonProperty
@@ -94,18 +81,6 @@ public final class DataGenColumnStats
         return distinctValsCount;
     }
 
-    @JsonProperty
-    public long getNullsCount()
-    {
-        return nullsCount;
-    }
-
-    @JsonProperty
-    public Optional<Long> getDataSize()
-    {
-        return dataSize;
-    }
-
     @Override
     public String toString()
     {
@@ -113,8 +88,6 @@ public final class DataGenColumnStats
                 .add("min", min)
                 .add("max", max)
                 .add("distinctValsCount", distinctValsCount)
-                .add("nullsCount", nullsCount)
-                .add("dataSize", dataSize)
                 .toString();
     }
 }
