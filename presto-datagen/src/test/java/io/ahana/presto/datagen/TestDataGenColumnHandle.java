@@ -19,28 +19,14 @@ import org.testng.annotations.Test;
 import static com.facebook.presto.common.type.BigintType.BIGINT;
 import static com.facebook.presto.common.type.DoubleType.DOUBLE;
 import static com.facebook.presto.common.type.IntegerType.INTEGER;
-import static com.facebook.presto.common.type.VarcharType.createUnboundedVarcharType;
-import static io.ahana.presto.datagen.MetadataUtil.COLUMN_CODEC;
-import static org.testng.Assert.assertEquals;
 
 public class TestDataGenColumnHandle
 {
-    @Test
-    public void testJsonRoundTrip()
-    {
-        DataGenColumnHandle columnHandle = new DataGenColumnHandle("columnName", createUnboundedVarcharType(), 0);
-
-        String json = COLUMN_CODEC.toJson(columnHandle);
-        DataGenColumnHandle copy = COLUMN_CODEC.fromJson(json);
-        assertEquals(copy, columnHandle);
-    }
-
     @Test
     public void testEquivalence()
     {
         EquivalenceTester.equivalenceTester()
                 .addEquivalentGroup(
-                        new DataGenColumnHandle("columnName", createUnboundedVarcharType(), 0),
                         new DataGenColumnHandle("columnName", INTEGER, 0),
                         new DataGenColumnHandle("columnName", BIGINT, 0),
                         new DataGenColumnHandle("columnName", DOUBLE, 1))
