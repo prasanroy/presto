@@ -14,7 +14,7 @@
 package io.ahana.presto.datagen.generator;
 
 import com.facebook.presto.common.type.Type;
-import io.ahana.presto.datagen.DataGenColumnStats;
+import io.ahana.presto.datagen.DataGenBaseColumnStats;
 import io.airlift.slice.Slice;
 import io.airlift.slice.Slices;
 
@@ -103,7 +103,7 @@ public class StringValueCursor
     }
 
     public static StringValueCursor create(
-            Type columnType, DataGenColumnStats columnSpec)
+            Type columnType, DataGenBaseColumnStats columnSpec)
     {
         requireNonNull(columnSpec, "columnSpec is null");
 

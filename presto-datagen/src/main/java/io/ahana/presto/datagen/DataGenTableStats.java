@@ -17,6 +17,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,6 @@ import java.util.Optional;
 
 import static com.google.common.base.MoreObjects.toStringHelper;
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.collect.Maps.uniqueIndex;
 import static java.util.Objects.requireNonNull;
 
 public final class DataGenTableStats
@@ -35,13 +35,19 @@ public final class DataGenTableStats
     @JsonCreator
     public DataGenTableStats(
             @JsonProperty("rowCount") long rowCount,
-            @JsonProperty("columnStats") List<DataGenColumnStats> columnStats)
+            @JsonProperty("columnStats") List<DataGenNamedColumnStats> columnStats)
     {
         checkArgument(rowCount >= 0, "rowCount is negative");
         this.rowCount = rowCount;
 
         requireNonNull(columnStats, "columnStats is null");
-        this.columnStats = uniqueIndex(columnStats, DataGenColumnStats::getName);
+
+        ImmutableMap.Builder<String, DataGenColumnStats> statsMapBuilder = ImmutableMap.builder();
+        for (DataGenNamedColumnStats s : columnStats) {
+            statsMapBuilder.put(s.getName(), s.getStats());
+        }
+
+        this.columnStats = statsMapBuilder.build();
     }
 
     @JsonProperty
@@ -51,9 +57,15 @@ public final class DataGenTableStats
     }
 
     @JsonProperty
-    public List<DataGenColumnStats> getColumnStats()
+    public List<DataGenNamedColumnStats> getColumnStats()
     {
-        return ImmutableList.copyOf(columnStats.values());
+        ImmutableList.Builder<DataGenNamedColumnStats> statsListBuilder = ImmutableList.builder();
+
+        for (Map.Entry<String, DataGenColumnStats> e : columnStats.entrySet()) {
+            statsListBuilder.add(new DataGenNamedColumnStats(e.getKey(), e.getValue()));
+        }
+
+        return statsListBuilder.build();
     }
 
     public Optional<DataGenColumnStats> getColumnStats(String columnName)

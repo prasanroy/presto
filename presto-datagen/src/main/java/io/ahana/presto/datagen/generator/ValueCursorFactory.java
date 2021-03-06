@@ -13,9 +13,10 @@
  */
 package io.ahana.presto.datagen.generator;
 
-import com.facebook.presto.common.block.Block;
+// import com.facebook.presto.common.type.ArrayType;
 import com.facebook.presto.common.type.Type;
 import com.google.common.collect.ImmutableList;
+import io.ahana.presto.datagen.DataGenBaseColumnStats;
 import io.ahana.presto.datagen.DataGenColumnStats;
 
 import java.util.Optional;
@@ -37,23 +38,26 @@ public class ValueCursorFactory
         DataGenColumnStats columnSpec = columnSpecOpt.get();
 
         if (ImmutableList.of(INTEGER, BIGINT).contains(columnType)) {
-            return LongValueCursor.create(columnType, columnSpec);
+            return LongValueCursor.create(columnType, (DataGenBaseColumnStats) columnSpec);
         }
         else if (ImmutableList.of(DOUBLE).contains(columnType)) {
-            return DoubleValueCursor.create(columnType, columnSpec);
+            return DoubleValueCursor.create(columnType, (DataGenBaseColumnStats) columnSpec);
         }
         else if (ImmutableList.of(BOOLEAN).contains(columnType)) {
-            return BooleanValueCursor.create(columnType, columnSpec);
+            return BooleanValueCursor.create(columnType, (DataGenBaseColumnStats) columnSpec);
         }
         else if (ImmutableList.of(VARCHAR).contains(columnType)) {
-            return StringValueCursor.create(columnType, columnSpec);
+            return StringValueCursor.create(columnType, (DataGenBaseColumnStats) columnSpec);
         }
-        else if (columnType.getJavaType() == Block.class) {
-            throw new UnsupportedOperationException("BLOCK types not supported");
-            // return new BlockValueCursor(columnType, columnSpec);
+        /*
+        else if (columnType instanceof ArrayType) {
+            ArrayType arrayColumnType = (ArrayType) columnType;
+            Type elementType = arrayColumnType.getElementType();
+
+            return ArrayValueCursor.create(elementType, columnSpec);
         }
-        else {
-            throw new UnsupportedOperationException();
-        }
+        */
+
+        throw new UnsupportedOperationException();
     }
 }

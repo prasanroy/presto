@@ -14,7 +14,7 @@
 package io.ahana.presto.datagen.generator;
 
 import com.facebook.presto.common.type.Type;
-import io.ahana.presto.datagen.DataGenColumnStats;
+import io.ahana.presto.datagen.DataGenBaseColumnStats;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
@@ -74,7 +74,7 @@ public class BooleanValueCursor
     }
 
     public static BooleanValueCursor create(
-            Type columnType, DataGenColumnStats columnSpec)
+            Type columnType, DataGenBaseColumnStats columnSpec)
     {
         requireNonNull(columnSpec, "columnSpec is null");
 

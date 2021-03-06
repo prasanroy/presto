@@ -14,7 +14,7 @@
 package io.ahana.presto.datagen.generator;
 
 import com.facebook.presto.common.type.Type;
-import io.ahana.presto.datagen.DataGenColumnStats;
+import io.ahana.presto.datagen.DataGenBaseColumnStats;
 
 import java.util.Optional;
 
@@ -101,7 +101,7 @@ public class LongValueCursor
     }
 
     public static LongValueCursor create(
-            Type columnType, DataGenColumnStats columnSpec)
+            Type columnType, DataGenBaseColumnStats columnSpec)
     {
         requireNonNull(columnSpec, "columnSpec is null");
 

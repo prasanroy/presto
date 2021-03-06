@@ -58,13 +58,13 @@ public class TestDataGenCatalog
                                 new DataGenTableStats(
                                     10,
                                     ImmutableList.of(
-                                        new DataGenColumnStats("x", 1, 3, 2),
-                                        new DataGenColumnStats("y", 5.5, 7.0, 3))),
+                                        new DataGenNamedColumnStats("x", new DataGenBaseColumnStats(1, 3, 2)),
+                                        new DataGenNamedColumnStats("y", new DataGenBaseColumnStats(5.5, 7.0, 3)))),
                                 new DataGenTableStats(
                                     4,
                                     ImmutableList.of(
-                                        new DataGenColumnStats("x", 4, 9, 3),
-                                        new DataGenColumnStats("y", 0.0, 9.0, 4))))),
+                                        new DataGenNamedColumnStats("x", new DataGenBaseColumnStats(4, 9, 3)),
+                                        new DataGenNamedColumnStats("y", new DataGenBaseColumnStats(0.0, 9.0, 4)))))),
                         new DataGenTable(
                             "tb",
                             ImmutableList.of(
@@ -73,11 +73,11 @@ public class TestDataGenCatalog
                                 new DataGenTableStats(
                                     10,
                                     ImmutableList.of(
-                                        new DataGenColumnStats("u", 1, 3, 2))),
+                                        new DataGenNamedColumnStats("u", new DataGenBaseColumnStats(1, 3, 2)))),
                                 new DataGenTableStats(
                                     5,
                                     ImmutableList.of(
-                                        new DataGenColumnStats("u", 4, 9, 3))))))),
+                                        new DataGenNamedColumnStats("u", new DataGenBaseColumnStats(4, 9, 3)))))))),
                 new DataGenSchema(
                     "second",
                     ImmutableList.of(
@@ -91,7 +91,7 @@ public class TestDataGenCatalog
                                 new DataGenTableStats(
                                     5,
                                     ImmutableList.of(
-                                        new DataGenColumnStats("u", 1, 3, 2),
-                                        new DataGenColumnStats("v", 5.5, 7.0, 3),
-                                        new DataGenColumnStats("w", "BAX", "CZX", 3)))))))));
+                                        new DataGenNamedColumnStats("u", new DataGenBaseColumnStats(1, 3, 2)),
+                                        new DataGenNamedColumnStats("v", new DataGenBaseColumnStats(5.5, 7.0, 3)),
+                                        new DataGenNamedColumnStats("w", new DataGenBaseColumnStats("BAX", "CZX", 3))))))))));
 }
