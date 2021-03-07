@@ -28,7 +28,6 @@ public class DataGenTable
 {
     private final String name;
     private final List<DataGenColumn> columns;
-    private final List<ColumnMetadata> columnsMetadata;
     private final List<DataGenTableStats> splitSpecs;
 
     @JsonCreator
@@ -43,12 +42,6 @@ public class DataGenTable
         requireNonNull(columns, "columns is null");
         checkArgument(!columns.isEmpty(), "[%s] columns is empty", name);
         this.columns = ImmutableList.copyOf(columns);
-
-        ImmutableList.Builder<ColumnMetadata> columnsMetadata = ImmutableList.builder();
-        for (DataGenColumn column : this.columns) {
-            columnsMetadata.add(new ColumnMetadata(column.getName(), column.getType()));
-        }
-        this.columnsMetadata = columnsMetadata.build();
 
         requireNonNull(splitSpecs, "splitSpecs is null");
         checkArgument(!splitSpecs.isEmpty(), "[%s] splitSpecs is empty", name);
@@ -75,6 +68,11 @@ public class DataGenTable
 
     public List<ColumnMetadata> getColumnsMetadata()
     {
-        return columnsMetadata;
+        ImmutableList.Builder<ColumnMetadata> columnsMetadata = ImmutableList.builder();
+        for (DataGenColumn column : columns) {
+            columnsMetadata.add(new ColumnMetadata(column.getName(), column.getType()));
+        }
+
+        return columnsMetadata.build();
     }
 }
