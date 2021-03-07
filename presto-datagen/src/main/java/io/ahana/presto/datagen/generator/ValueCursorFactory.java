@@ -29,7 +29,7 @@ import static com.facebook.presto.common.type.IntegerType.INTEGER;
 import static com.facebook.presto.common.type.VarcharType.VARCHAR;
 import static com.google.common.base.Preconditions.checkArgument;
 
-public class ValueCursorFactory
+public final class ValueCursorFactory
 {
     public ValueCursor create(Type columnType, Optional<DataGenColumnStats> columnSpecOpt)
     {
