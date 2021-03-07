@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
               include = JsonTypeInfo.As.PROPERTY,
               property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = DataGenBaseColumnStats.class, name = "simple"),
+        @JsonSubTypes.Type(value = DataGenBaseColumnStats.class, name = "base"),
         @JsonSubTypes.Type(value = DataGenRowColumnStats.class, name = "row"),
         @JsonSubTypes.Type(value = DataGenArrayColumnStats.class, name = "array")
 })
