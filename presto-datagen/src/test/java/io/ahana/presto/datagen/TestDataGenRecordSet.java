@@ -38,7 +38,7 @@ public class TestDataGenRecordSet
                 table.getSplitSpecs().get(0),
                 columnHandles(table.getColumns()));
 
-        assertEquals(recordSet.getColumnTypes(), ImmutableList.of(BIGINT, DOUBLE));
+        assertEquals(recordSet.getColumnTypes(), ImmutableList.of(BIGINT));
 
         recordSet = new DataGenRecordSet(
                 table.getSplitSpecs().get(0),
@@ -47,37 +47,9 @@ public class TestDataGenRecordSet
     }
 
     @Test
-    public void testCursorSimple()
-    {
-        DataGenTable table = TEST_CATALOG.getTable("first", "ta").get();
-        RecordSet recordSet = new DataGenRecordSet(
-                table.getSplitSpecs().get(1),
-                columnHandles(table.getColumns()));
-
-        RecordCursor cursor = recordSet.cursor();
-
-        assertEquals(cursor.getType(0), BIGINT);
-        assertEquals(cursor.getType(1), DOUBLE);
-
-        ImmutableList.Builder<Long> vals0 = ImmutableList.builder();
-        ImmutableList.Builder<Double> vals1 = ImmutableList.builder();
-
-        while (cursor.advanceNextPosition()) {
-            assertFalse(cursor.isNull(0));
-            vals0.add(cursor.getLong(0));
-
-            assertFalse(cursor.isNull(1));
-            vals1.add(cursor.getDouble(1));
-        }
-
-        assertEquals(vals0.build(), ImmutableList.of(4L, 6L, 9L, 4L));
-        assertEquals(vals1.build(), ImmutableList.of(0.0, 3.0, 6.0, 9.0));
-    }
-
-    @Test
     public void testCursorVarchar()
     {
-        DataGenTable table = TEST_CATALOG.getTable("second", "tb").get();
+        DataGenTable table = TEST_CATALOG.getTable("second", "t").get();
         RecordSet recordSet = new DataGenRecordSet(
                 table.getSplitSpecs().get(0),
                 columnHandles(table.getColumns()));

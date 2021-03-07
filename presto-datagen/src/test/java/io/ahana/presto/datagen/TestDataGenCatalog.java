@@ -34,14 +34,14 @@ public class TestDataGenCatalog
     {
         assertEquals(TEST_CATALOG.getSchemaNames(), ImmutableSet.of("first", "second"));
         assertEquals(TEST_CATALOG.getTableNames("first"), ImmutableSet.of("ta", "tb"));
-        assertEquals(TEST_CATALOG.getTableNames("second"), ImmutableSet.of("tb"));
+        assertEquals(TEST_CATALOG.getTableNames("second"), ImmutableSet.of("t"));
 
-        Optional<DataGenTable> tableOpt = TEST_CATALOG.getTable("first", "ta");
-        assertTrue(tableOpt.isPresent(), "Table 'ta' is not present");
+        Optional<DataGenTable> tableOpt = TEST_CATALOG.getTable("second", "t");
+        assertTrue(tableOpt.isPresent(), "Table 't' is not present");
 
         DataGenTable table = tableOpt.get();
-        assertEquals(table.getName(), "ta");
-        assertEquals(table.getColumns(), ImmutableList.of(new DataGenColumn("x", BIGINT), new DataGenColumn("y", DOUBLE)));
+        assertEquals(table.getName(), "t");
+        assertEquals(table.getColumns(), ImmutableList.of(new DataGenColumn("u", INTEGER), new DataGenColumn("v", DOUBLE), new DataGenColumn("w", VARCHAR)));
     }
 
     public static final DataGenCatalog TEST_CATALOG = new DataGenCatalog(
@@ -52,19 +52,16 @@ public class TestDataGenCatalog
                         new DataGenTable(
                             "ta",
                             ImmutableList.of(
-                                new DataGenColumn("x", BIGINT),
-                                new DataGenColumn("y", DOUBLE)),
+                                new DataGenColumn("u", BIGINT)),
                             ImmutableList.of(
                                 new DataGenTableStats(
                                     10,
                                     ImmutableList.of(
-                                        new DataGenNamedColumnStats("x", new DataGenBaseColumnStats(1, 3, 2)),
-                                        new DataGenNamedColumnStats("y", new DataGenBaseColumnStats(5.5, 7.0, 3)))),
+                                        new DataGenNamedColumnStats("u", new DataGenBaseColumnStats(1, 3, 2)))),
                                 new DataGenTableStats(
-                                    4,
+                                    5,
                                     ImmutableList.of(
-                                        new DataGenNamedColumnStats("x", new DataGenBaseColumnStats(4, 9, 3)),
-                                        new DataGenNamedColumnStats("y", new DataGenBaseColumnStats(0.0, 9.0, 4)))))),
+                                        new DataGenNamedColumnStats("u", new DataGenBaseColumnStats(4, 9, 3)))))),
                         new DataGenTable(
                             "tb",
                             ImmutableList.of(
@@ -82,7 +79,7 @@ public class TestDataGenCatalog
                     "second",
                     ImmutableList.of(
                         new DataGenTable(
-                            "tb",
+                            "t",
                             ImmutableList.of(
                                 new DataGenColumn("u", INTEGER),
                                 new DataGenColumn("v", DOUBLE),
