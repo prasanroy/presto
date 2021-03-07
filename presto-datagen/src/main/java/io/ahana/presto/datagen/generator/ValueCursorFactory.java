@@ -13,9 +13,10 @@
  */
 package io.ahana.presto.datagen.generator;
 
-// import com.facebook.presto.common.type.ArrayType;
+import com.facebook.presto.common.type.ArrayType;
 import com.facebook.presto.common.type.Type;
 import com.google.common.collect.ImmutableList;
+import io.ahana.presto.datagen.DataGenArrayColumnStats;
 import io.ahana.presto.datagen.DataGenBaseColumnStats;
 import io.ahana.presto.datagen.DataGenColumnStats;
 
@@ -57,14 +58,10 @@ public class ValueCursorFactory
             checkArgument(columnSpec instanceof DataGenBaseColumnStats, "incompatible specification");
             return StringValueCursor.create((DataGenBaseColumnStats) columnSpec);
         }
-        /*
         else if (columnType instanceof ArrayType) {
-            ArrayType arrayColumnType = (ArrayType) columnType;
-            Type elementType = arrayColumnType.getElementType();
-
-            return ArrayValueCursor.create(elementType, columnSpec);
+            checkArgument(columnSpec instanceof DataGenArrayColumnStats, "incompatible specification");
+            return ArrayValueCursor.create((ArrayType) columnType, (DataGenArrayColumnStats) columnSpec, this);
         }
-        */
 
         throw new UnsupportedOperationException();
     }
