@@ -13,7 +13,7 @@
  */
 package io.ahana.presto.datagen.generator;
 
-import com.facebook.presto.common.type.Type;
+import com.facebook.presto.common.type.VarcharType;
 import io.ahana.presto.datagen.DataGenBaseColumnStats;
 import io.airlift.slice.Slice;
 import io.airlift.slice.Slices;
@@ -26,22 +26,18 @@ import static java.util.Objects.requireNonNull;
 public class StringValueCursor
         implements ValueCursor
 {
-    private final Type valueType;
     private final LongValueCursor longValueCursor;
 
     public StringValueCursor(
-            Type valueType, long min, long max,
-            Optional<Long> distinctValsCountOpt)
+            long min, long max, Optional<Long> distinctValsCountOpt)
     {
-        this.valueType = requireNonNull(valueType, "value type is null");
-
         this.longValueCursor = new LongValueCursor(BIGINT, min, max, distinctValsCountOpt);
     }
 
     @Override
-    public Type getValueType()
+    public VarcharType getValueType()
     {
-        return valueType;
+        return VarcharType.VARCHAR;
     }
 
     @Override
@@ -102,14 +98,13 @@ public class StringValueCursor
         return v;
     }
 
-    public static StringValueCursor create(
-            Type columnType, DataGenBaseColumnStats columnSpec)
+    public static StringValueCursor create(DataGenBaseColumnStats columnSpec)
     {
         requireNonNull(columnSpec, "columnSpec is null");
 
         long min = encode(columnSpec.getMin().orElse("").toString());
         long max = columnSpec.getMax().map(s -> encode(s.toString())).orElse(Long.MAX_VALUE);
 
-        return new StringValueCursor(columnType, min, max, columnSpec.getDistinctValsCount());
+        return new StringValueCursor(min, max, columnSpec.getDistinctValsCount());
     }
 }

@@ -13,7 +13,7 @@
  */
 package io.ahana.presto.datagen.generator;
 
-import com.facebook.presto.common.type.Type;
+import com.facebook.presto.common.type.DoubleType;
 import io.ahana.presto.datagen.DataGenBaseColumnStats;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -24,8 +24,6 @@ public class DoubleValueCursor
 {
     public static final long MAX_DISTINCTVALSCOUNT = 100;
 
-    private final Type valueType;
-
     private final double min;
     private final double max;
     private final long distinctValsCount;
@@ -35,11 +33,8 @@ public class DoubleValueCursor
     private double nextValue;
     private double increment;
 
-    public DoubleValueCursor(
-            Type valueType, double min, double max, long distinctValsCount)
+    public DoubleValueCursor(double min, double max, long distinctValsCount)
     {
-        this.valueType = requireNonNull(valueType, "value type is null");
-
         this.min = min;
         checkArgument(this.min >= 0, "min is negative, only positive values allowed");
         this.max = max;
@@ -61,9 +56,9 @@ public class DoubleValueCursor
     }
 
     @Override
-    public Type getValueType()
+    public DoubleType getValueType()
     {
-        return valueType;
+        return DoubleType.DOUBLE;
     }
 
     @Override
@@ -96,8 +91,7 @@ public class DoubleValueCursor
         }
     }
 
-    public static DoubleValueCursor create(
-            Type columnType, DataGenBaseColumnStats columnSpec)
+    public static DoubleValueCursor create(DataGenBaseColumnStats columnSpec)
     {
         requireNonNull(columnSpec, "columnSpec is null");
 
@@ -105,6 +99,6 @@ public class DoubleValueCursor
         double max = ((Double) columnSpec.getMax().orElse(Double.MAX_VALUE)).doubleValue();
         long distinctValsCount = columnSpec.getDistinctValsCount().orElse((long) Math.min(max - min + 1, MAX_DISTINCTVALSCOUNT));
 
-        return new DoubleValueCursor(columnType, min, max, distinctValsCount);
+        return new DoubleValueCursor(min, max, distinctValsCount);
     }
 }

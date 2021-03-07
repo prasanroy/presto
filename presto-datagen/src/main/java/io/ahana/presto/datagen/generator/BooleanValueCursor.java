@@ -13,7 +13,7 @@
  */
 package io.ahana.presto.datagen.generator;
 
-import com.facebook.presto.common.type.Type;
+import com.facebook.presto.common.type.BooleanType;
 import io.ahana.presto.datagen.DataGenBaseColumnStats;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -22,8 +22,6 @@ import static java.util.Objects.requireNonNull;
 public class BooleanValueCursor
         implements ValueCursor
 {
-    private final Type valueType;
-
     private final Boolean min;
     private final Boolean max;
     private final long distinctValsCount;
@@ -32,10 +30,8 @@ public class BooleanValueCursor
     private boolean nextValue;
 
     public BooleanValueCursor(
-            Type valueType, boolean min, boolean max, long distinctValsCount)
+            boolean min, boolean max, long distinctValsCount)
     {
-        this.valueType = requireNonNull(valueType, "value type is null");
-
         this.min = min;
         this.max = max;
         checkArgument(!this.min || this.max, "max is less than min");
@@ -49,9 +45,9 @@ public class BooleanValueCursor
     }
 
     @Override
-    public Type getValueType()
+    public BooleanType getValueType()
     {
-        return valueType;
+        return BooleanType.BOOLEAN;
     }
 
     @Override
@@ -73,8 +69,7 @@ public class BooleanValueCursor
         nextValue = this.max;
     }
 
-    public static BooleanValueCursor create(
-            Type columnType, DataGenBaseColumnStats columnSpec)
+    public static BooleanValueCursor create(DataGenBaseColumnStats columnSpec)
     {
         requireNonNull(columnSpec, "columnSpec is null");
 
@@ -82,6 +77,6 @@ public class BooleanValueCursor
         boolean max = ((Boolean) columnSpec.getMax().orElse(true)).booleanValue();
         long distinctValsCount = columnSpec.getDistinctValsCount().orElse(2L);
 
-        return new BooleanValueCursor(columnType, min, max, distinctValsCount);
+        return new BooleanValueCursor(min, max, distinctValsCount);
     }
 }

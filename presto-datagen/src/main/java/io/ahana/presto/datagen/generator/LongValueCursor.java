@@ -41,7 +41,7 @@ public class LongValueCursor
             Type valueType, long min, long max,
             Optional<Long> distinctValsCountOpt)
     {
-        this.valueType = requireNonNull(valueType, "value type is null");
+        this.valueType = requireNonNull(valueType, "valueType is null");
 
         this.min = min;
         checkArgument(this.min >= 0, "min is negative, only positive values allowed");

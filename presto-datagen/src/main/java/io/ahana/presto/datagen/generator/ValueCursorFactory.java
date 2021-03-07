@@ -26,6 +26,7 @@ import static com.facebook.presto.common.type.BooleanType.BOOLEAN;
 import static com.facebook.presto.common.type.DoubleType.DOUBLE;
 import static com.facebook.presto.common.type.IntegerType.INTEGER;
 import static com.facebook.presto.common.type.VarcharType.VARCHAR;
+import static com.google.common.base.Preconditions.checkArgument;
 
 public class ValueCursorFactory
 {
@@ -35,19 +36,26 @@ public class ValueCursorFactory
             return new NullCursor(columnType);
         }
 
-        DataGenColumnStats columnSpec = columnSpecOpt.get();
+        return create(columnType, columnSpecOpt.get());
+    }
 
+    public ValueCursor create(Type columnType, DataGenColumnStats columnSpec)
+    {
         if (ImmutableList.of(INTEGER, BIGINT).contains(columnType)) {
+            checkArgument(columnSpec instanceof DataGenBaseColumnStats, "incompatible specification");
             return LongValueCursor.create(columnType, (DataGenBaseColumnStats) columnSpec);
         }
         else if (ImmutableList.of(DOUBLE).contains(columnType)) {
-            return DoubleValueCursor.create(columnType, (DataGenBaseColumnStats) columnSpec);
+            checkArgument(columnSpec instanceof DataGenBaseColumnStats, "incompatible specification");
+            return DoubleValueCursor.create((DataGenBaseColumnStats) columnSpec);
         }
         else if (ImmutableList.of(BOOLEAN).contains(columnType)) {
-            return BooleanValueCursor.create(columnType, (DataGenBaseColumnStats) columnSpec);
+            checkArgument(columnSpec instanceof DataGenBaseColumnStats, "incompatible specification");
+            return BooleanValueCursor.create((DataGenBaseColumnStats) columnSpec);
         }
         else if (ImmutableList.of(VARCHAR).contains(columnType)) {
-            return StringValueCursor.create(columnType, (DataGenBaseColumnStats) columnSpec);
+            checkArgument(columnSpec instanceof DataGenBaseColumnStats, "incompatible specification");
+            return StringValueCursor.create((DataGenBaseColumnStats) columnSpec);
         }
         /*
         else if (columnType instanceof ArrayType) {
