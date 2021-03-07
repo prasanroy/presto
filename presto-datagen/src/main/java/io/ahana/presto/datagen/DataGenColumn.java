@@ -19,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
+import static com.google.common.base.MoreObjects.toStringHelper;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.util.Objects.requireNonNull;
@@ -74,6 +75,9 @@ public final class DataGenColumn
     @Override
     public String toString()
     {
-        return name + ":" + type;
+        return toStringHelper(this)
+                .add("name", name)
+                .add("type", type)
+                .toString();
     }
 }
