@@ -13,6 +13,7 @@
  */
 package io.ahana.presto.datagen;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.collect.ImmutableSet;
 
 import javax.inject.Inject;
@@ -22,6 +23,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import static com.google.common.base.MoreObjects.toStringHelper;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Maps.uniqueIndex;
@@ -64,5 +66,18 @@ public class DataGenCatalog
     public Optional<DataGenTable> getTable(String schemaName, String tableName)
     {
         return getSchema(schemaName).map(schema -> schema.getTable(tableName));
+    }
+
+    @Override
+    public String toString()
+    {
+        ToStringHelper schemasString = toStringHelper(schemas);
+        for (Map.Entry<String, DataGenSchema> e : schemas.entrySet()) {
+            schemasString.add(e.getKey(), e.getValue());
+        }
+
+        return toStringHelper(this)
+                .add("schemas", schemasString)
+                .toString();
     }
 }

@@ -15,6 +15,7 @@ package io.ahana.presto.datagen;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static com.google.common.base.MoreObjects.toStringHelper;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Maps.uniqueIndex;
@@ -65,5 +67,19 @@ public class DataGenSchema
     {
         checkArgument(!isNullOrEmpty(tableName), "tableName is null or is empty");
         return tables.get(tableName);
+    }
+
+    @Override
+    public String toString()
+    {
+        ToStringHelper tablesString = toStringHelper(tables);
+        for (Map.Entry<String, DataGenTable> e : tables.entrySet()) {
+            tablesString.add(e.getKey(), e.getValue());
+        }
+
+        return toStringHelper(this)
+                .add("name", name)
+                .add("tables", tablesString)
+                .toString();
     }
 }
