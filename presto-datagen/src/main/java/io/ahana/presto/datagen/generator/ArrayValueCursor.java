@@ -25,13 +25,13 @@ public final class ArrayValueCursor
     private final ArrayType valueType;
 
     private final ValueCursor elementCursor;
-    private final long elementCount;
+    private final int elementCount;
 
     private Object[] value;
     private Object[] nextValue;
 
     public ArrayValueCursor(
-            ArrayType valueType, ValueCursor elementCursor, long elementCount)
+            ArrayType arrayType, ValueCursor elementCursor, int elementCount)
     {
         this.valueType = requireNonNull(valueType, "valueType is null");
         this.elementCursor = requireNonNull(elementCursor, "elementCursor is null");

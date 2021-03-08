@@ -23,12 +23,12 @@ import static java.util.Objects.requireNonNull;
 public final class DataGenArrayColumnStats
         extends DataGenColumnStats
 {
-    private final long elementCount;
+    private final int elementCount;
     private final DataGenColumnStats elementStats;
 
     @JsonCreator
     public DataGenArrayColumnStats(
-            @JsonProperty("elementCount") long elementCount,
+            @JsonProperty("elementCount") int elementCount,
             @JsonProperty("elementStats") DataGenColumnStats elementStats)
     {
         checkArgument(elementCount >= 0, "elementCount is negative");
@@ -39,7 +39,7 @@ public final class DataGenArrayColumnStats
     }
 
     @JsonProperty
-    public long getElementCount()
+    public int getElementCount()
     {
         return elementCount;
     }
