@@ -20,20 +20,20 @@ public interface ValueCursor
     /**
      * Get the Presto type of the values returned
      */
-    public Type getValueType();
+    Type getValueType();
 
     /**
      * Is the current value NULL?
      */
-    public boolean isNull();
+    boolean isNull();
 
     /**
      * Get the current value
      */
-    public Object getValue();
+    Object getValue();
 
     /**
      * Advance cursor to the next position
      */
-    public void advanceNextPosition();
+    void advanceNextPosition();
 }
