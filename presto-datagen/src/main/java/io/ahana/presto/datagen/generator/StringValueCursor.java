@@ -13,6 +13,7 @@
  */
 package io.ahana.presto.datagen.generator;
 
+import com.facebook.presto.common.block.BlockBuilder;
 import com.facebook.presto.common.type.VarcharType;
 import io.ahana.presto.datagen.DataGenBaseColumnStats;
 import io.airlift.slice.Slice;
@@ -56,6 +57,12 @@ public final class StringValueCursor
     public void advanceNextPosition()
     {
         longValueCursor.advanceNextPosition();
+    }
+
+    @Override
+    public void writeValue(BlockBuilder builder)
+    {
+        VarcharType.VARCHAR.writeSlice(builder, getValue());
     }
 
     private static String decode(long v)

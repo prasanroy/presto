@@ -13,6 +13,7 @@
  */
 package io.ahana.presto.datagen.generator;
 
+import com.facebook.presto.common.block.BlockBuilder;
 import com.facebook.presto.common.type.Type;
 import io.ahana.presto.datagen.DataGenBaseColumnStats;
 
@@ -98,6 +99,12 @@ public final class LongValueCursor
         else {
             nextValue += increment;
         }
+    }
+
+    @Override
+    public void writeValue(BlockBuilder builder)
+    {
+        valueType.writeLong(builder, value);
     }
 
     public static LongValueCursor create(

@@ -13,6 +13,8 @@
  */
 package io.ahana.presto.datagen.generator;
 
+import com.facebook.presto.common.block.Block;
+import com.facebook.presto.common.block.BlockBuilder;
 import com.facebook.presto.common.type.ArrayType;
 import io.ahana.presto.datagen.DataGenArrayColumnStats;
 
@@ -27,8 +29,7 @@ public final class ArrayValueCursor
     private final ValueCursor elementCursor;
     private final int elementCount;
 
-    private Object[] value;
-    private Object[] nextValue;
+    private Block value;
 
     public ArrayValueCursor(
             ArrayType arrayType, ValueCursor elementCursor, int elementCount)
@@ -47,7 +48,7 @@ public final class ArrayValueCursor
     }
 
     @Override
-    public Object[] getValue()
+    public Block getValue()
     {
         return value;
     }
@@ -61,7 +62,19 @@ public final class ArrayValueCursor
     @Override
     public void advanceNextPosition()
     {
-        /* TODO */
+        BlockBuilder arrayBuilder = elementCursor.createBlockBuilder(elementCount);
+        for (int i = 0; i < elementCount; i++) {
+            elementCursor.advanceNextPosition();
+            elementCursor.writeValue(arrayBuilder);
+        }
+
+        value = arrayBuilder.build();
+    }
+
+    @Override
+    public void writeValue(BlockBuilder builder)
+    {
+        arrayType.writeObject(builder, getValue());
     }
 
     public static ArrayValueCursor create(

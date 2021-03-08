@@ -13,6 +13,7 @@
  */
 package io.ahana.presto.datagen.generator;
 
+import com.facebook.presto.common.block.BlockBuilder;
 import com.facebook.presto.common.type.Type;
 
 import static java.util.Objects.requireNonNull;
@@ -49,5 +50,11 @@ public final class NullCursor
     public void advanceNextPosition()
     {
         // no-op
+    }
+
+    @Override
+    public void writeValue(BlockBuilder builder)
+    {
+        builder.appendNull();
     }
 }

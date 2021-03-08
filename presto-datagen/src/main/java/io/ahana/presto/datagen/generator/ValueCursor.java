@@ -13,6 +13,7 @@
  */
 package io.ahana.presto.datagen.generator;
 
+import com.facebook.presto.common.block.BlockBuilder;
 import com.facebook.presto.common.type.Type;
 
 public interface ValueCursor
@@ -36,4 +37,17 @@ public interface ValueCursor
      * Advance cursor to the next position
      */
     void advanceNextPosition();
+
+    /**
+     * Create a block builder for array
+     */
+    default BlockBuilder createBlockBuilder(int elementCount)
+    {
+        return getValueType().createBlockBuilder(null, elementCount);
+    }
+
+    /**
+     * Write value to block builder
+     */
+    void writeValue(BlockBuilder builder);
 }

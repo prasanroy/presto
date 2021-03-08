@@ -13,6 +13,7 @@
  */
 package io.ahana.presto.datagen.generator;
 
+import com.facebook.presto.common.block.BlockBuilder;
 import com.facebook.presto.common.type.BooleanType;
 import io.ahana.presto.datagen.DataGenBaseColumnStats;
 
@@ -67,6 +68,12 @@ public final class BooleanValueCursor
     {
         value = nextValue;
         nextValue = this.max;
+    }
+
+    @Override
+    public void writeValue(BlockBuilder builder)
+    {
+        BooleanType.BOOLEAN.writeBoolean(builder, getValue());
     }
 
     public static BooleanValueCursor create(DataGenBaseColumnStats columnSpec)

@@ -13,6 +13,7 @@
  */
 package io.ahana.presto.datagen.generator;
 
+import com.facebook.presto.common.block.BlockBuilder;
 import com.facebook.presto.common.type.DoubleType;
 import io.ahana.presto.datagen.DataGenBaseColumnStats;
 
@@ -89,6 +90,12 @@ public final class DoubleValueCursor
         else {
             nextValue += increment;
         }
+    }
+
+    @Override
+    public void writeValue(BlockBuilder builder)
+    {
+        DoubleType.DOUBLE.writeDouble(builder, value);
     }
 
     public static DoubleValueCursor create(DataGenBaseColumnStats columnSpec)
