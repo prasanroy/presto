@@ -22,7 +22,7 @@ import static java.util.Objects.requireNonNull;
 public final class ArrayValueCursor
         implements ValueCursor
 {
-    private final ArrayType valueType;
+    private final ArrayType arrayType;
 
     private final ValueCursor elementCursor;
     private final int elementCount;
@@ -33,7 +33,7 @@ public final class ArrayValueCursor
     public ArrayValueCursor(
             ArrayType arrayType, ValueCursor elementCursor, int elementCount)
     {
-        this.valueType = requireNonNull(valueType, "valueType is null");
+        this.arrayType = requireNonNull(arrayType, "arrayType is null");
         this.elementCursor = requireNonNull(elementCursor, "elementCursor is null");
 
         checkArgument(elementCount >= 0, "elementCount is negative");
@@ -43,7 +43,7 @@ public final class ArrayValueCursor
     @Override
     public ArrayType getValueType()
     {
-        return valueType;
+        return arrayType;
     }
 
     @Override
