@@ -20,7 +20,6 @@ import org.testng.annotations.Test;
 
 import java.util.List;
 
-import static com.facebook.presto.common.type.BigintType.BIGINT;
 import static com.facebook.presto.common.type.DoubleType.DOUBLE;
 import static com.facebook.presto.common.type.IntegerType.INTEGER;
 import static com.facebook.presto.common.type.VarcharType.VARCHAR;
@@ -31,28 +30,14 @@ import static org.testng.Assert.assertFalse;
 public class TestDataGenRecordSet
 {
     @Test
-    public void testGetColumnTypes()
-    {
-        DataGenTable table = TEST_CATALOG.getTable("first", "ta").get();
-        RecordSet recordSet = new DataGenRecordSet(
-                table.getSplitSpecs().get(0),
-                columnHandles(table.getColumns()));
-
-        assertEquals(recordSet.getColumnTypes(), ImmutableList.of(BIGINT));
-
-        recordSet = new DataGenRecordSet(
-                table.getSplitSpecs().get(0),
-                ImmutableList.of());
-        assertEquals(recordSet.getColumnTypes(), ImmutableList.of());
-    }
-
-    @Test
     public void testCursorVarchar()
     {
         DataGenTable table = TEST_CATALOG.getTable("second", "t").get();
         RecordSet recordSet = new DataGenRecordSet(
                 table.getSplitSpecs().get(0),
                 columnHandles(table.getColumns()));
+
+        assertEquals(recordSet.getColumnTypes(), ImmutableList.of(INTEGER, DOUBLE, VARCHAR));
 
         RecordCursor cursor = recordSet.cursor();
 
