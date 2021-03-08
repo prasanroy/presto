@@ -61,9 +61,7 @@ public class ArrayValueCursor
     @Override
     public void advanceNextPosition()
     {
-        value = nextValue;
-        // TODO
-        nextValue = new Object[]{};
+        /* TODO */
     }
 
     public static ArrayValueCursor create(
