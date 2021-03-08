@@ -43,23 +43,23 @@ public final class ValueCursorFactory
     public ValueCursor create(Type columnType, DataGenColumnStats columnSpec)
     {
         if (ImmutableList.of(INTEGER, BIGINT).contains(columnType)) {
-            checkArgument(columnSpec instanceof DataGenBaseColumnStats, "incompatible specification");
+            checkArgument(columnSpec instanceof DataGenBaseColumnStats, "incompatible column statistics specification");
             return LongValueCursor.create(columnType, (DataGenBaseColumnStats) columnSpec);
         }
         else if (ImmutableList.of(DOUBLE).contains(columnType)) {
-            checkArgument(columnSpec instanceof DataGenBaseColumnStats, "incompatible specification");
+            checkArgument(columnSpec instanceof DataGenBaseColumnStats, "incompatible column statistics specification");
             return DoubleValueCursor.create((DataGenBaseColumnStats) columnSpec);
         }
         else if (ImmutableList.of(BOOLEAN).contains(columnType)) {
-            checkArgument(columnSpec instanceof DataGenBaseColumnStats, "incompatible specification");
+            checkArgument(columnSpec instanceof DataGenBaseColumnStats, "incompatible column statistics specification");
             return BooleanValueCursor.create((DataGenBaseColumnStats) columnSpec);
         }
         else if (ImmutableList.of(VARCHAR).contains(columnType)) {
-            checkArgument(columnSpec instanceof DataGenBaseColumnStats, "incompatible specification");
+            checkArgument(columnSpec instanceof DataGenBaseColumnStats, "incompatible column statistics specification");
             return StringValueCursor.create((DataGenBaseColumnStats) columnSpec);
         }
         else if (columnType instanceof ArrayType) {
-            checkArgument(columnSpec instanceof DataGenArrayColumnStats, "incompatible specification");
+            checkArgument(columnSpec instanceof DataGenArrayColumnStats, "incompatible column statistics specification");
             return ArrayValueCursor.create((ArrayType) columnType, (DataGenArrayColumnStats) columnSpec, this);
         }
 
