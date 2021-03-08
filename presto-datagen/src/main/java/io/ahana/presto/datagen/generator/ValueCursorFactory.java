@@ -14,11 +14,13 @@
 package io.ahana.presto.datagen.generator;
 
 import com.facebook.presto.common.type.ArrayType;
+import com.facebook.presto.common.type.RowType;
 import com.facebook.presto.common.type.Type;
 import com.google.common.collect.ImmutableList;
 import io.ahana.presto.datagen.DataGenArrayColumnStats;
 import io.ahana.presto.datagen.DataGenBaseColumnStats;
 import io.ahana.presto.datagen.DataGenColumnStats;
+import io.ahana.presto.datagen.DataGenRowColumnStats;
 
 import java.util.Optional;
 
@@ -61,6 +63,10 @@ public final class ValueCursorFactory
         else if (columnType instanceof ArrayType) {
             checkArgument(columnSpec instanceof DataGenArrayColumnStats, "incompatible column statistics specification");
             return ArrayValueCursor.create((ArrayType) columnType, (DataGenArrayColumnStats) columnSpec, this);
+        }
+        else if (columnType instanceof RowType) {
+            checkArgument(columnSpec instanceof DataGenRowColumnStats, "incompatible column statistics specification");
+            return RowValueCursor.create((RowType) columnType, (DataGenRowColumnStats) columnSpec, this);
         }
 
         throw new UnsupportedOperationException();
