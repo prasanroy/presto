@@ -78,15 +78,15 @@ public final class ArrayValueCursor
     }
 
     public static ArrayValueCursor create(
-            ArrayType columnType,
+            ArrayType arrayType,
             DataGenArrayColumnStats columnSpec,
             ValueCursorFactory valueCursorFactory)
     {
-        requireNonNull(columnType, "value type is null");
+        requireNonNull(arrayType, "arrayType is null");
         requireNonNull(columnSpec, "columnSpec is null");
 
-        ValueCursor elementCursor = valueCursorFactory.create(columnType.getElementType(), columnSpec.getElementStats());
+        ValueCursor elementCursor = valueCursorFactory.create(arrayType.getElementType(), columnSpec.getElementStats());
 
-        return new ArrayValueCursor(columnType, elementCursor, columnSpec.getElementCount());
+        return new ArrayValueCursor(arrayType, elementCursor, columnSpec.getElementCount());
     }
 }
