@@ -23,7 +23,7 @@ import java.util.Optional;
 import static com.facebook.presto.common.type.BigintType.BIGINT;
 import static java.util.Objects.requireNonNull;
 
-public class StringValueCursor
+public final class StringValueCursor
         implements ValueCursor
 {
     private final LongValueCursor longValueCursor;

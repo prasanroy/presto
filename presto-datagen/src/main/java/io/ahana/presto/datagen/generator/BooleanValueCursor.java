@@ -19,7 +19,7 @@ import io.ahana.presto.datagen.DataGenBaseColumnStats;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
-public class BooleanValueCursor
+public final class BooleanValueCursor
         implements ValueCursor
 {
     private final Boolean min;

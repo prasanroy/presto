@@ -19,7 +19,7 @@ import io.ahana.presto.datagen.DataGenArrayColumnStats;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
-public class ArrayValueCursor
+public final class ArrayValueCursor
         implements ValueCursor
 {
     private final ArrayType valueType;

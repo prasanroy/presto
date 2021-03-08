@@ -17,7 +17,7 @@ import com.facebook.presto.common.type.Type;
 
 import static java.util.Objects.requireNonNull;
 
-public class NullCursor
+public final class NullCursor
         implements ValueCursor
 {
     private final Type valueType;

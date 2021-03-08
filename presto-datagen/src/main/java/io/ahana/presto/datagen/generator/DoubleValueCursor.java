@@ -19,7 +19,7 @@ import io.ahana.presto.datagen.DataGenBaseColumnStats;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
-public class DoubleValueCursor
+public final class DoubleValueCursor
         implements ValueCursor
 {
     public static final long MAX_DISTINCTVALSCOUNT = 100;

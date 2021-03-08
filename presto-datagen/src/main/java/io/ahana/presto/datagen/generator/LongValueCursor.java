@@ -21,7 +21,7 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
-public class LongValueCursor
+public final class LongValueCursor
         implements ValueCursor
 {
     public static final long MAX_DISTINCTVALSCOUNT = 100;
