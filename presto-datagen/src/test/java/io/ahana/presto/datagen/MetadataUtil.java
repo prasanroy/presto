@@ -16,10 +16,13 @@ package io.ahana.presto.datagen;
 import com.facebook.airlift.json.JsonCodec;
 import com.facebook.airlift.json.JsonCodecFactory;
 import com.facebook.airlift.json.ObjectMapperProvider;
+import com.facebook.presto.common.type.ArrayType;
+import com.facebook.presto.common.type.RowType;
 import com.facebook.presto.common.type.StandardTypes;
 import com.facebook.presto.common.type.Type;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.FromStringDeserializer;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.List;
@@ -58,16 +61,22 @@ public final class MetadataUtil
     public static final class TestingTypeDeserializer
             extends FromStringDeserializer<Type>
     {
-        private final Map<String, Type> types = ImmutableMap.of(
-                StandardTypes.BOOLEAN, BOOLEAN,
-                StandardTypes.BIGINT, BIGINT,
-                StandardTypes.INTEGER, INTEGER,
-                StandardTypes.DOUBLE, DOUBLE,
-                StandardTypes.VARCHAR, VARCHAR);
+        private final Map<String, Type> types;
 
         public TestingTypeDeserializer()
         {
             super(Type.class);
+
+            ImmutableMap.Builder<String, Type> typeMapBuilder = ImmutableMap.builder();
+            typeMapBuilder.put(StandardTypes.BOOLEAN, BOOLEAN);
+            typeMapBuilder.put(StandardTypes.BIGINT, BIGINT);
+            typeMapBuilder.put(StandardTypes.INTEGER, INTEGER);
+            typeMapBuilder.put(StandardTypes.DOUBLE, DOUBLE);
+            typeMapBuilder.put(StandardTypes.VARCHAR, VARCHAR);
+            typeMapBuilder.put("row(x bigint, y varchar)", RowType.from(ImmutableList.of(RowType.field("x", BIGINT), RowType.field("y", VARCHAR))));
+            typeMapBuilder.put("array(row(x bigint, y varchar))", new ArrayType(RowType.from(ImmutableList.of(RowType.field("x", BIGINT), RowType.field("y", VARCHAR)))));
+
+            this.types = typeMapBuilder.build();
         }
 
         @Override

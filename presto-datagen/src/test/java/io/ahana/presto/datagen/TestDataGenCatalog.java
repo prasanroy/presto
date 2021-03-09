@@ -13,6 +13,8 @@
  */
 package io.ahana.presto.datagen;
 
+import com.facebook.presto.common.type.ArrayType;
+import com.facebook.presto.common.type.RowType;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import org.testng.annotations.Test;
@@ -52,29 +54,33 @@ public class TestDataGenCatalog
                         new DataGenTable(
                             "ta",
                             ImmutableList.of(
-                                new DataGenColumn("u", BIGINT)),
+                                new DataGenColumn("u", RowType.from(ImmutableList.of(RowType.field("x", BIGINT), RowType.field("y", VARCHAR))))),
                             ImmutableList.of(
                                 new DataGenTableStats(
                                     10,
                                     ImmutableList.of(
-                                        new DataGenNamedColumnStats("u", new DataGenBaseColumnStats(1, 3, 2)))),
-                                new DataGenTableStats(
-                                    5,
-                                    ImmutableList.of(
-                                        new DataGenNamedColumnStats("u", new DataGenBaseColumnStats(4, 9, 3)))))),
+                                        new DataGenNamedColumnStats(
+                                            "u",
+                                            new DataGenRowColumnStats(
+                                                ImmutableList.of(
+                                                    new DataGenNamedColumnStats("x", new DataGenBaseColumnStats(1, 3, 2)),
+                                                    new DataGenNamedColumnStats("y", new DataGenBaseColumnStats("BILL", "JEFF", 7))))))))),
                         new DataGenTable(
                             "tb",
                             ImmutableList.of(
-                                new DataGenColumn("u", INTEGER)),
+                                new DataGenColumn("v", new ArrayType(RowType.from(ImmutableList.of(RowType.field("x", BIGINT), RowType.field("y", VARCHAR)))))),
                             ImmutableList.of(
                                 new DataGenTableStats(
                                     10,
                                     ImmutableList.of(
-                                        new DataGenNamedColumnStats("u", new DataGenBaseColumnStats(1, 3, 2)))),
-                                new DataGenTableStats(
-                                    5,
-                                    ImmutableList.of(
-                                        new DataGenNamedColumnStats("u", new DataGenBaseColumnStats(4, 9, 3)))))))),
+                                        new DataGenNamedColumnStats(
+                                            "v",
+                                            new DataGenArrayColumnStats(
+                                                3,
+                                                new DataGenRowColumnStats(
+                                                    ImmutableList.of(
+                                                        new DataGenNamedColumnStats("x", new DataGenBaseColumnStats(1, 3, 2)),
+                                                        new DataGenNamedColumnStats("y", new DataGenBaseColumnStats("BEZOS", "GATES", 7)))))))))))),
                 new DataGenSchema(
                     "second",
                     ImmutableList.of(
